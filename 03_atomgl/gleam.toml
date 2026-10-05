@@ -5,8 +5,8 @@ description = "Show the badge temperature on the AtomGL display"
 
 [dependencies]
 gleam_stdlib = ">= 1.0.0 and < 2.0.0"
-atomvm_gleam = { path = "../packages/atomvm_gleam" }
+atomvm_gleam = { git = "https://github.com/nathanjohnson320/atomvm_gleam", ref = "5fbe285402a78b4930299b0aee4db2ef09a43096" }
 
 [dev_dependencies]
 gleeunit = ">= 1.0.0 and < 2.0.0"
-orbital = { git = "https://github.com/nathanjohnson320/orbital", ref = "8c5aa0a55bbe899e434e3ab25b3cd878cdb5d2da" }
+orbital = { git = "https://github.com/nathanjohnson320/orbital", ref = "8385969f90c193ca4864e1a4d07180d5b5754504" }

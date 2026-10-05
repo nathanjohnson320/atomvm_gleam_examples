@@ -1,10 +1,10 @@
 # Exercise 2, in Gleam: read the temperature sensor
 
 Same badge program as `02_temperature`, written in Gleam. Gleam compiles to
-BEAM, and the [Orbital fork](https://github.com/nathanjohnson320/orbital/tree/flash-offset-and-monitor)
+BEAM, and the [Orbital fork](https://github.com/nathanjohnson320/orbital)
 packs those BEAM files into an `.avm` file and flashes it.
 
-Requires Gleam 1.18.1. This directory pins it in `.tool-versions`.
+Requires Gleam 1.18.1 and Erlang/OTP 27+. This directory pins both in `.tool-versions`.
 
 Assumes AtomVM is already installed on the badge, see exercise 1. Gleam does
 not replace that firmware.
@@ -15,8 +15,8 @@ not replace that firmware.
 `temperature.start` is the entry point. Orbital finds it because the package
 name in `gleam.toml` is `temperature`.
 
-I²C open and read go through the local
-[`atomvm_gleam`](../packages/atomvm_gleam) package (`atomvm_gleam/i2c`).
+I²C open and read go through the
+[`atomvm_gleam`](https://github.com/nathanjohnson320/atomvm_gleam) package (`atomvm_gleam/i2c`).
 
 ## The bus
 

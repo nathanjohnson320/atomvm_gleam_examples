@@ -1,17 +1,17 @@
 # Exercise 5, in Gleam: rainbows on the RGB LEDs
 
 Same badge program as `05_neopixel`, written in Gleam. Gleam compiles to BEAM,
-and the [Orbital fork](https://github.com/nathanjohnson320/orbital/tree/flash-offset-and-monitor)
+and the [Orbital fork](https://github.com/nathanjohnson320/orbital)
 packs those BEAM files into an `.avm` file and flashes it.
 
-Requires Gleam 1.18.1. This directory pins it in `.tool-versions`.
+Requires Gleam 1.18.1 and Erlang/OTP 27+. This directory pins both in `.tool-versions`.
 
 Assumes AtomVM is already installed on the badge, see exercise 1.
 
 ## The application
 
 `src/rainbow.gleam` computes colours and runs the loop, `src/sk6812.gleam`
-turns them into a bitstream through [`atomvm_gleam/spi`](../packages/atomvm_gleam).
+turns them into a bitstream through [`atomvm_gleam/spi`](https://github.com/nathanjohnson320/atomvm_gleam).
 `rainbow.start` is the entry point. Orbital finds it because the package name
 in `gleam.toml` is `rainbow`.
 

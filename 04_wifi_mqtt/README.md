@@ -1,10 +1,10 @@
 # Exercise 4, in Gleam: publish the temperature over MQTT
 
 Same badge program as `04_wifi_mqtt`, written in Gleam. Gleam compiles to BEAM,
-and the [Orbital fork](https://github.com/nathanjohnson320/orbital/tree/flash-offset-and-monitor)
+and the [Orbital fork](https://github.com/nathanjohnson320/orbital)
 packs those BEAM files into an `.avm` file and flashes it.
 
-Requires Gleam 1.18.1. This directory pins it in `.tool-versions`.
+Requires Gleam 1.18.1 and Erlang/OTP 27+. This directory pins both in `.tool-versions`.
 
 Assumes AtomVM is already installed on the badge, see exercise 1.
 
@@ -26,7 +26,7 @@ pub const topic_prefix = "goatmire/badge"
 `network:wait_for_sta/2`, `src/mqtt.gleam` wraps the vendored
 [`amqtt_client`](https://github.com/atomvm/amqtt) Erlang sources in `src/`,
 and `src/tmp103.gleam` talks to the sensor over
-[`atomvm_gleam/i2c`](../packages/atomvm_gleam). `publisher.start` is the entry
+[`atomvm_gleam/i2c`](https://github.com/nathanjohnson320/atomvm_gleam). `publisher.start` is the entry
 point. Orbital finds it because the package name in `gleam.toml` is
 `publisher`.
 

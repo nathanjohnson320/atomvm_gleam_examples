@@ -99,10 +99,10 @@ fn setup() -> Result(Nil, String) {
   use Nil <- result.try(
     each_ok(cols, fn(pin) {
       use Nil <- result.try(
-        gpio.set_pin_mode(pin, gpio.Input)
+        gpio.set_pin_mode(gpio.pin(pin), gpio.Input)
         |> or_log("GPIO set_pin_mode failed", gpio.error_to_string),
       )
-      gpio.set_pin_pull(pin, gpio.Up)
+      gpio.set_pin_pull(gpio.pin(pin), gpio.Up)
       |> or_log("GPIO set_pin_pull failed", gpio.error_to_string)
     }),
   )
@@ -112,14 +112,14 @@ fn setup() -> Result(Nil, String) {
   // down, so its pull-up has to be set explicitly.
   each_ok(rows, fn(pin) {
     use Nil <- result.try(
-      gpio.set_pin_mode(pin, gpio.OutputOd)
+      gpio.set_pin_mode(gpio.pin(pin), gpio.OutputOd)
       |> or_log("GPIO set_pin_mode failed", gpio.error_to_string),
     )
     use Nil <- result.try(
-      gpio.set_pin_pull(pin, gpio.Up)
+      gpio.set_pin_pull(gpio.pin(pin), gpio.Up)
       |> or_log("GPIO set_pin_pull failed", gpio.error_to_string),
     )
-    gpio.digital_write(pin, gpio.PinHigh)
+    gpio.digital_write(gpio.pin(pin), gpio.PinHigh)
     |> or_log("GPIO digital_write failed", gpio.error_to_string)
   })
 }
@@ -214,7 +214,7 @@ fn idle(state: State) -> State {
 fn arm(pins: gpio.Gpio) -> Nil {
   list.each(cols, fn(pin) {
     let _ =
-      gpio.set_int(pins, pin, gpio.Falling)
+      gpio.set_int(pins, gpio.pin(pin), gpio.Falling)
       |> or_log("GPIO set_int failed", gpio.error_to_string)
   })
 }
@@ -222,7 +222,7 @@ fn arm(pins: gpio.Gpio) -> Nil {
 fn disarm(pins: gpio.Gpio) -> Nil {
   list.each(cols, fn(pin) {
     let _ =
-      gpio.remove_int(pins, pin)
+      gpio.remove_int(pins, gpio.pin(pin))
       |> or_log("GPIO remove_int failed", gpio.error_to_string)
   })
 }
@@ -242,7 +242,7 @@ fn flush_interrupts() -> Nil {
 
 fn any_column_low() -> Bool {
   list.any(cols, fn(pin) {
-    case gpio.digital_read(pin) {
+    case gpio.digital_read(gpio.pin(pin)) {
       Ok(gpio.PinLow) -> True
       _ -> False
     }
@@ -251,7 +251,7 @@ fn any_column_low() -> Bool {
 
 fn all_rows(level: gpio.Level) -> Nil {
   list.each(rows, fn(pin) {
-    let _ = gpio.digital_write(pin, level)
+    let _ = gpio.digital_write(gpio.pin(pin), level)
   })
 }
 
@@ -261,9 +261,9 @@ fn scan() -> List(#(Int, Int)) {
 
   let keys =
     list.index_map(rows, fn(pin, row) {
-      let _ = gpio.digital_write(pin, gpio.PinLow)
+      let _ = gpio.digital_write(gpio.pin(pin), gpio.PinLow)
       let closed = closed_columns(row)
-      let _ = gpio.digital_write(pin, gpio.PinHigh)
+      let _ = gpio.digital_write(gpio.pin(pin), gpio.PinHigh)
       closed
     })
     |> list.flatten
@@ -274,7 +274,7 @@ fn scan() -> List(#(Int, Int)) {
 
 fn closed_columns(row: Int) -> List(#(Int, Int)) {
   list.index_map(cols, fn(pin, col) {
-    case gpio.digital_read(pin) {
+    case gpio.digital_read(gpio.pin(pin)) {
       Ok(gpio.PinLow) -> [#(row, col)]
       _ -> []
     }

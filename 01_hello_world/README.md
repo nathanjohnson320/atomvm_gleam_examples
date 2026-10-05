@@ -1,13 +1,18 @@
 # Exercise 1, in Gleam: console hello world
 
 Same badge program as `01_hello_world`, written in Gleam. Gleam compiles to
-BEAM, and the [Orbital fork](https://github.com/nathanjohnson320/orbital/tree/flash-offset-and-monitor)
+BEAM, and the [Orbital fork](https://github.com/nathanjohnson320/orbital)
 packs those BEAM files into an `.avm` file and flashes it.
 
-Requires Gleam 1.18.1. This directory pins it in `.tool-versions`.
+Requires Gleam 1.18.1 and Erlang/OTP 27+. This directory pins both in `.tool-versions`.
 
-Assumes the AtomVM image from exercise 1 is already installed on the badge.
-Gleam does not replace that firmware.
+Assumes AtomVM is already installed on the badge. Gleam does not replace
+that firmware. To install AtomVM with Orbital:
+
+```sh
+gleam run -m orbital info
+gleam run -m orbital install
+```
 
 ## The application
 

@@ -75,6 +75,7 @@ fn initialise(
       backlight: 3,
       backlight_active: display.Low,
       backlight_enabled: True,
+      clock_speed_hz: None,
       spi_host: bus,
     ))
 
@@ -85,7 +86,7 @@ fn initialise(
 
   // Matching 065_boot: open the driver, then attach_interrupt on pin 0.
   use Nil <- result.try(
-    gpio.attach_interrupt(0, gpio.Falling)
+    gpio.attach_interrupt(gpio.pin(0), gpio.Falling)
     |> or_log("GPIO attach_interrupt failed", gpio.error_to_string),
   )
 

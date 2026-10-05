@@ -1,10 +1,10 @@
 # Exercise 7, in Gleam: read the battery voltage
 
 Same badge program as `07_analog`, written in Gleam. Gleam compiles to BEAM,
-and the [Orbital fork](https://github.com/nathanjohnson320/orbital/tree/flash-offset-and-monitor)
+and the [Orbital fork](https://github.com/nathanjohnson320/orbital)
 packs those BEAM files into an `.avm` file and flashes it.
 
-Requires Gleam 1.18.1. This directory pins it in `.tool-versions`.
+Requires Gleam 1.18.1 and Erlang/OTP 27+. This directory pins both in `.tool-versions`.
 
 Assumes AtomVM is already installed on the badge, see exercise 1. Gleam does
 not replace that firmware.
@@ -14,8 +14,8 @@ not replace that firmware.
 `src/power.gleam` is the whole thing. `power.start` is the entry point.
 Orbital finds it because the package name in `gleam.toml` is `power`.
 
-ADC init, acquire, and sample go through the local
-[`atomvm_gleam`](../packages/atomvm_gleam) package (`atomvm_gleam/adc`).
+ADC init, acquire, and sample go through the
+[`atomvm_gleam`](https://github.com/nathanjohnson320/atomvm_gleam) package (`atomvm_gleam/adc`).
 
 ## The ADC
 

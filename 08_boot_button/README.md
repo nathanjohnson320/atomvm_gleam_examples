@@ -1,10 +1,10 @@
 # Exercise 8, in Gleam: count boot-button presses
 
 Same badge program as `065_boot`, written in Gleam. Gleam compiles to BEAM,
-and the [Orbital fork](https://github.com/nathanjohnson320/orbital/tree/flash-offset-and-monitor)
+and the [Orbital fork](https://github.com/nathanjohnson320/orbital)
 packs those BEAM files into an `.avm` file and flashes it.
 
-Requires Gleam 1.18.1. This directory pins it in `.tool-versions`.
+Requires Gleam 1.18.1 and Erlang/OTP 27+. This directory pins both in `.tool-versions`.
 
 Assumes the AtomGL image from exercise 1 is already installed on the badge.
 Gleam does not replace that firmware.
@@ -13,9 +13,9 @@ Gleam does not replace that firmware.
 
 `src/boot_button.gleam` starts a [`gleam_otp`](https://github.com/gleam-lang/otp)
 actor — the Gleam counterpart of the Elixir GenServer in `065_boot`. The actor
-opens SPI and the display port via the local
-[`atomvm_gleam`](../packages/atomvm_gleam) package, arms GPIO 0 with
-`attach_interrupt` (same shape as `065_boot`), then handles each
+opens SPI and the display port via the
+[`atomvm_gleam`](https://github.com/nathanjohnson320/atomvm_gleam) package, arms GPIO 0 with
+`attach_interrupt(gpio.pin(0), …)` (same shape as `065_boot`), then handles each
 `{gpio_interrupt, Pin}` message: bump the count, redraw, sleep 200 ms for
 debounce, flush bounced edges. `boot_button.start` is the entry point. Orbital
 finds it because the package name in `gleam.toml` is `boot_button`. After the

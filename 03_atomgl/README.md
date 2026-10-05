@@ -1,25 +1,25 @@
 # Exercise 3, in Gleam: show the temperature on the display
 
 Same badge program as `03_atomgl`, written in Gleam. Gleam compiles to BEAM,
-and [Orbital](https://hexdocs.pm/orbital/) packs those BEAM files into an
+and [Orbital](https://github.com/nathanjohnson320/orbital) packs those BEAM files into an
 `.avm` file for AtomVM.
 
-Requires Gleam 1.18.1. This directory pins it in `.tool-versions`.
+Requires Gleam 1.18.1 and Erlang/OTP 27+. This directory pins both in `.tool-versions`.
 
 Assumes the AtomGL image from exercise 1 is already installed on the badge.
 Gleam does not replace that firmware.
 
 ## The application
 
-`src/display.gleam` opens SPI and the display port via the local
-[`atomvm_gleam`](../packages/atomvm_gleam) package, opens the TMP103 over I²C,
+`src/display.gleam` opens SPI and the display port via the
+[`atomvm_gleam`](https://github.com/nathanjohnson320/atomvm_gleam) package, opens the TMP103 over I²C,
 and runs the loop. `src/temperature_scene.gleam` builds the display list, and
 `src/tmp103.gleam` converts the sensor reading. `display.start` is the entry
 point. Orbital finds it because the package name in `gleam.toml` is `display`.
 
 Badge pin and panel options stay in the application.
-`src/tmp103_ffi.erl` is the small Erlang side for I²C open and the Celsius
-read — Gleam has no literal for the Erlang proplist `i2c:open/1` expects.
+`src/tmp103_ffi.erl` is a small Erlang side for I²C open and the Celsius
+read. Other exercises use `atomvm_gleam/i2c` for the same bus.
 
 The scene is not an `avm_scene` process. That library is Elixir, so it is not
 a Gleam dependency. The loop pushes the display list through
