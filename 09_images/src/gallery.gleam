@@ -1,12 +1,10 @@
 import assets
 import atomvm_gleam/display
 import atomvm_gleam/spi
-import gif
 import gleam/io
 import gleam/list
 import gleam/option.{None, Some}
 import image.{type Sprite}
-import png
 import scene
 
 const width = 320
@@ -57,26 +55,9 @@ pub fn start() -> Nil {
           clock_speed_hz: None,
           spi_host: bus,
         ))
-      case load_assets() {
-        Error(message) -> {
-          io.println(message)
-          Nil
-        }
-        Ok(#(png_sprite, gif_frames)) ->
-          loop(screen, png_sprite, gif_frames, 0)
-      }
+      // Pre-decoded rgba8888 from `gleam run -m dump_assets`.
+      loop(screen, assets.demo_png(), assets.demo_gif_frames(), 0)
     }
-  }
-}
-
-fn load_assets() -> Result(#(Sprite, List(Sprite)), String) {
-  case png.decode(assets.demo_png()) {
-    Error(_) -> Error("PNG decode failed")
-    Ok(png_sprite) ->
-      case gif.decode(assets.demo_gif()) {
-        Error(_) -> Error("GIF decode failed")
-        Ok(frames) -> Ok(#(png_sprite, frames))
-      }
   }
 }
 

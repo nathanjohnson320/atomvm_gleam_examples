@@ -1,7 +1,7 @@
-# Exercise 9, in Gleam: decode PNG/GIF and show them on AtomGL
+# Exercise 9, in Gleam: show PNG/GIF art on AtomGL
 
-A small gallery that decodes embedded PNG and GIF bytes in **pure Gleam**, then
-pushes AtomGL display lists through
+Decode PNG and GIF **on the host** into raw rgba8888 files, embed those for the
+badge, then push AtomGL display lists through
 [`atomvm_gleam`](https://github.com/nathanjohnson320/atomvm_gleam).
 
 Requires Gleam 1.18.1 and Erlang/OTP 27+. This directory pins both in
@@ -9,24 +9,43 @@ Requires Gleam 1.18.1 and Erlang/OTP 27+. This directory pins both in
 
 Assumes the AtomGL image from exercise 1 is already installed on the badge.
 
-## The application
+## Pipeline
 
-`gallery.start` opens SPI and the ST7789 the same way as `03_atomgl`, decodes
-`assets.demo_png` and `assets.demo_gif` once, then loops GIF frames.
+```text
+assets/src/*.png|*.gif
+        │
+        ▼  gleam run -m dump_assets
+assets/decoded/*@WxH.rgba   +   src/assets.gleam
+        │
+        ▼  gallery.start on AtomVM
+AtomGL image / scaled_cropped_image
+```
 
-| Module | Role |
-|--------|------|
-| `png.gleam` | 8-bit RGBA, non-interlaced PNG → `Rgba8888` |
-| `zlib_inflate.gleam` | Stored-block zlib inflate for PNG IDAT |
-| `gif.gleam` | GIF87a/89a → composed `Rgba8888` frames |
-| `image.gleam` | AtomGL `image` / `scaled_cropped_image` helpers |
-| `scene.gleam` | Display list |
-| `assets.gleam` | Embedded demo binaries |
+| Path | Role |
+|------|------|
+| `assets/src/` | Source PNG/GIF (edit these) |
+| `dump_assets.gleam` | Host decoder → `.rgba` files + generated module |
+| `png.gleam` / `gif.gleam` / `zlib_inflate.gleam` | Used by the dump tool (and tests) |
+| `assets/decoded/` | Raw rgba8888 dumps (`name@WxH.rgba`) |
+| `src/assets.gleam` | Generated sprites the badge loads |
+| `image.gleam` / `scene.gleam` / `gallery.gleam` | AtomGL display only |
 
-PNG support is intentionally narrow (colour type 6, 8-bit, no Adam7). The
-inflate path accepts **stored** deflate blocks only — enough for the embedded
-demo and for hand-built fixtures. GIF handles local/global palettes,
-transparency, disposal, and interlacing.
+The badge never inflates PNG or runs GIF LZW. It only loads pre-decoded
+`Rgba8888` sprites.
+
+PNG support in the dump tool is narrow (8-bit RGBA, non-interlaced, stored zlib
+blocks). GIF handles palettes, transparency, disposal, and interlacing.
+
+## Regenerate assets
+
+After changing anything under `assets/src/`:
+
+```sh
+gleam run -m dump_assets
+```
+
+Commit `assets/decoded/` and `src/assets.gleam` with the sources so flash does
+not require a dump step.
 
 ## Build, flash, and monitor
 
@@ -38,7 +57,6 @@ gleam run -m orbital monitor
 
 ## Replacing the demo art
 
-Paste another small PNG/GIF as a `BitArray` literal in `src/assets.gleam`. Keep
-images tiny (the demos are 8×8) so decode and flash fit AtomVM RAM and the
-`main.avm` partition. Prefer PNGs whose IDAT uses stored zlib blocks, or extend
-`zlib_inflate.gleam` if you need Huffman-compressed streams.
+Drop a small PNG or GIF into `assets/src/` (keep sizes tiny — the demos are
+8×8), point `dump_assets` at the new filenames if you rename them, run the dump,
+then flash.

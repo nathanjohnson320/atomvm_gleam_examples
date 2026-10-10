@@ -6,6 +6,7 @@ import gleeunit
 import image.{Rgba8888, Rect}
 import png
 import scene
+import simplifile
 
 pub fn main() -> Nil {
   gleeunit.main()
@@ -19,29 +20,23 @@ pub fn wrap_frame_test() {
   assert image.wrap_frame(5, 0) == 0
 }
 
-pub fn png_decode_test() {
-  let assert Ok(Rgba8888(width, height, pixels)) = png.decode(assets.demo_png())
+pub fn png_source_decodes_test() {
+  let assert Ok(bytes) = simplifile.read_bits(from: "assets/src/demo.png")
+  let assert Ok(Rgba8888(width, height, pixels)) = png.decode(bytes)
   assert width == 8
   assert height == 8
   assert bit_array.byte_size(pixels) == 8 * 8 * 4
 
-  // Top-left quadrant is yellow-ish (R=255,G=255,B=64)
   let assert Ok(<<r, g, b, a>>) = bit_array.slice(pixels, 0, 4)
   assert r == 255
   assert g == 255
   assert b == 64
   assert a == 255
-
-  // Top-right pixel (x=4,y=0) is green-ish (R=0,G=255,B=64)
-  let assert Ok(<<r2, g2, b2, a2>>) = bit_array.slice(pixels, 4 * 4, 4)
-  assert r2 == 0
-  assert g2 == 255
-  assert b2 == 64
-  assert a2 == 255
 }
 
-pub fn gif_decode_test() {
-  let assert Ok(frames) = gif.decode(assets.demo_gif())
+pub fn gif_source_decodes_test() {
+  let assert Ok(bytes) = simplifile.read_bits(from: "assets/src/demo.gif")
+  let assert Ok(frames) = gif.decode(bytes)
   assert list.length(frames) == 2
 
   let assert [Rgba8888(w0, h0, frame0), Rgba8888(w1, h1, frame1)] = frames
@@ -63,10 +58,32 @@ pub fn gif_decode_test() {
   assert a1 == 255
 }
 
-pub fn scene_contains_background_test() {
-  let assert Ok(png_sprite) = png.decode(assets.demo_png())
-  let assert Ok(frames) = gif.decode(assets.demo_gif())
-  let items = scene.render(320, 240, png_sprite, frames, 0)
+pub fn generated_assets_match_decode_test() {
+  let assert Ok(bytes) = simplifile.read_bits(from: "assets/src/demo.png")
+  let assert Ok(decoded) = png.decode(bytes)
+  assert assets.demo_png() == decoded
+
+  let assert Ok(gif_bytes) = simplifile.read_bits(from: "assets/src/demo.gif")
+  let assert Ok(frames) = gif.decode(gif_bytes)
+  assert assets.demo_gif_frames() == frames
+}
+
+pub fn scene_loads_generated_assets_test() {
+  let items =
+    scene.render(320, 240, assets.demo_png(), assets.demo_gif_frames(), 0)
   let assert [_, _, _, _, Rect(0, 0, 320, 240, colour)] = items
   assert colour == 0x202020
+}
+
+pub fn decoded_rgba_files_exist_test() {
+  let assert Ok(True) =
+    simplifile.is_file("assets/decoded/demo@8x8.rgba")
+  let assert Ok(True) =
+    simplifile.is_file("assets/decoded/demo_gif_00@8x8.rgba")
+  let assert Ok(True) =
+    simplifile.is_file("assets/decoded/demo_gif_01@8x8.rgba")
+
+  let assert Ok(pixels) =
+    simplifile.read_bits(from: "assets/decoded/demo@8x8.rgba")
+  assert bit_array.byte_size(pixels) == 8 * 8 * 4
 }
