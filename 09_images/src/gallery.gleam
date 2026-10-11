@@ -12,7 +12,7 @@ const width = 320
 
 const height = 240
 
-const frame_ms = 200
+const frame_ms = 120
 
 @external(erlang, "timer", "sleep")
 fn sleep(milliseconds: Int) -> Nil
