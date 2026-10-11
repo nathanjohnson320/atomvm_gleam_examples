@@ -8,7 +8,7 @@
 
 packages = [
   { name = "argv", version = "1.1.0", build_tools = ["gleam"], requirements = [], otp_app = "argv", source = "hex", outer_checksum = "3277D100448BDB4A29B6D58C0F36F631CBC349E8BDD09766C6309DF202831140" },
-  { name = "atomgl_image", version = "1.0.0", build_tools = ["gleam"], requirements = ["filepath", "gleam_stdlib", "simplifile"], source = "local", path = "../atomgl_image" },
+  { name = "atomgl_image", version = "1.0.0", build_tools = ["gleam"], requirements = ["gleam_stdlib"], source = "local", path = "../atomgl_image" },
   { name = "atomvm_gleam", version = "0.7.0-beta.0-2", build_tools = ["gleam"], requirements = ["gleam_erlang", "gleam_stdlib"], source = "git", repo = "https://github.com/nathanjohnson320/atomvm_gleam", commit = "85e06c186fd81bb77443608979706c6c28cc932e" },
   { name = "atomvm_packbeam", version = "0.8.2", build_tools = ["rebar3"], requirements = [], otp_app = "atomvm_packbeam", source = "hex", outer_checksum = "E60A55E2184698EC485FB1D02166B4CD173BBCE5C99C7BCED49A6E9BE5F948AD" },
   { name = "envoy", version = "1.2.0", build_tools = ["gleam"], requirements = ["gleam_stdlib"], otp_app = "envoy", source = "hex", outer_checksum = "9C6FBB6BFA02A52798BEEC5977A738CAD6E4A057F4B67FD0C8061AD2502C191A" },

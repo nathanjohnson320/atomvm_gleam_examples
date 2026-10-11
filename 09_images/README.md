@@ -1,9 +1,10 @@
 # Exercise 9, in Gleam: show PNG/GIF art on AtomGL
 
-Decode PNG and GIF **on the host** with the shared
-[`atomgl_image`](../atomgl_image) package, embed the rgba8888 dumps for the
+Decode PNG and GIF **on the host** with
+[`atomgl_image_dump`](../atomgl_image_dump), embed the rgba8888 dumps for the
 badge, then push AtomGL display lists through
-[`atomvm_gleam`](https://github.com/nathanjohnson320/atomvm_gleam).
+[`atomvm_gleam`](https://github.com/nathanjohnson320/atomvm_gleam) using
+[`atomgl_image`](../atomgl_image) runtime helpers.
 
 The demo art is **Lucy**, Gleam’s starfish mascot — a static PNG plus an
 8-frame spinning GIF derived from the official SVG.
@@ -18,7 +19,7 @@ Assumes the AtomGL image from exercise 1 is already installed on the badge.
 ```text
 assets/src/lucy.png + lucy_spin.gif
         │
-        ▼  gleam run -m dump_assets   (thin wrapper → atomgl_image/dump)
+        ▼  atomgl_image_dump (separate host package)
 assets/decoded/*@WxH.rgba   +   src/assets.gleam
         │
         ▼  gallery.start on AtomVM
@@ -27,9 +28,9 @@ AtomGL image / scaled_cropped_image
 
 | Path | Role |
 |------|------|
-| [`../atomgl_image`](../atomgl_image) | Reusable PNG/GIF decode + dump + AtomGL helpers |
+| [`../atomgl_image`](../atomgl_image) | Runtime `sprite` / `item` (+ codecs for tests) |
+| [`../atomgl_image_dump`](../atomgl_image_dump) | Host dump CLI — not part of this example app |
 | `assets/src/` | Source PNG/GIF (plus `lucy.svg` for provenance) |
-| `dump_assets.gleam` | Example paths wired into `atomgl_image/dump` |
 | `assets/decoded/` | Raw rgba8888 dumps (`name@WxH.rgba`) |
 | `src/assets.gleam` | Generated sprites the badge loads |
 | `scene.gleam` / `gallery.gleam` | Display-only AtomVM app |
@@ -42,7 +43,14 @@ The badge never inflates PNG or runs GIF LZW. It only loads pre-decoded
 After changing anything under `assets/src/`:
 
 ```sh
-gleam run -m dump_assets
+cd ../atomgl_image_dump
+gleam run -- \
+  --png ../09_images/assets/src/lucy.png \
+  --gif ../09_images/assets/src/lucy_spin.gif \
+  --decoded ../09_images/assets/decoded \
+  --module ../09_images/src/assets.gleam \
+  --png-stem lucy --gif-stem lucy_spin \
+  --png-fn lucy_png --gif-fn lucy_spin_frames
 ```
 
 Commit `assets/decoded/` and `src/assets.gleam` with the sources so flash does
@@ -51,7 +59,6 @@ not require a dump step.
 ## Build, flash, and monitor
 
 ```sh
-# shared package tests
 cd ../atomgl_image && gleam test && cd ../09_images
 
 gleam test
