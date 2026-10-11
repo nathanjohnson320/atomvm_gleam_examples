@@ -5,6 +5,7 @@
 /// gleam run -m dump_assets
 /// ```
 
+import filepath
 import gif
 import gleam/int
 import gleam/io
@@ -13,6 +14,7 @@ import gleam/result
 import gleam/string
 import image.{type Sprite, Rgba8888}
 import png
+import simplifile
 
 const src_dir = "assets/src"
 
@@ -23,43 +25,40 @@ const generated_path = "src/assets.gleam"
 pub fn main() -> Nil {
   case run() {
     Ok(Nil) -> io.println("Wrote " <> out_dir <> " and " <> generated_path)
-    Error(message) -> {
-      io.println("dump_assets failed: " <> message)
-      halt(1)
-    }
+    Error(message) -> panic as { "dump_assets failed: " <> message }
   }
 }
-
-@external(erlang, "erlang", "halt")
-fn halt(status: Int) -> Nil
 
 fn run() -> Result(Nil, String) {
   use _ <- result.try(ensure_dir(out_dir))
   use _ <- result.try(clear_rgba(out_dir))
-  use png_sprite <- result.try(dump_png(join(src_dir, "demo.png"), "demo"))
-  use gif_frames <- result.try(dump_gif(join(src_dir, "demo.gif"), "demo_gif"))
+  use png_sprite <- result.try(
+    dump_png(filepath.join(src_dir, "demo.png"), "demo"),
+  )
+  use gif_frames <- result.try(
+    dump_gif(filepath.join(src_dir, "demo.gif"), "demo_gif"),
+  )
   write_assets_module(png_sprite, gif_frames)
 }
 
 fn ensure_dir(path: String) -> Result(Nil, String) {
-  case make_dir(path) {
+  case simplifile.create_directory_all(path) {
     Ok(Nil) -> Ok(Nil)
-    Error("eexist") -> Ok(Nil)
-    Error(reason) -> Error("mkdir " <> path <> ": " <> reason)
+    Error(error) -> Error(simplifile.describe_error(error))
   }
 }
 
 fn clear_rgba(dir: String) -> Result(Nil, String) {
-  case list_dir(dir) {
-    Error(reason) -> Error("list " <> dir <> ": " <> reason)
+  case simplifile.read_directory(dir) {
+    Error(error) -> Error(simplifile.describe_error(error))
     Ok(names) ->
       list.try_each(over: names, with: fn(name) {
         case string.ends_with(name, ".rgba") {
           False -> Ok(Nil)
           True ->
-            case delete(join(dir, name)) {
+            case simplifile.delete(filepath.join(dir, name)) {
               Ok(Nil) -> Ok(Nil)
-              Error(reason) -> Error("delete " <> name <> ": " <> reason)
+              Error(error) -> Error(simplifile.describe_error(error))
             }
         }
       })
@@ -104,20 +103,20 @@ fn write_sprite(stem: String, sprite: Sprite) -> Result(Nil, String) {
     <> "x"
     <> int.to_string(height)
     <> ".rgba"
-  let path = join(out_dir, name)
-  case write_bits(path, pixels) {
+  let path = filepath.join(out_dir, name)
+  case simplifile.write_bits(to: path, bits: pixels) {
     Ok(Nil) -> {
       io.println("  " <> path)
       Ok(Nil)
     }
-    Error(reason) -> Error("write " <> path <> ": " <> reason)
+    Error(error) -> Error(simplifile.describe_error(error))
   }
 }
 
 fn read_bits(path: String) -> Result(BitArray, String) {
-  case read_file(path) {
+  case simplifile.read_bits(from: path) {
     Ok(bytes) -> Ok(bytes)
-    Error(reason) -> Error(path <> ": " <> reason)
+    Error(error) -> Error(path <> ": " <> simplifile.describe_error(error))
   }
 }
 
@@ -144,9 +143,9 @@ fn write_assets_module(
       gif_frames_source(gif_frames),
       "  ]\n}\n",
     ])
-  case write_string(generated_path, body) {
+  case simplifile.write(to: generated_path, contents: body) {
     Ok(Nil) -> Ok(Nil)
-    Error(reason) -> Error("write " <> generated_path <> ": " <> reason)
+    Error(error) -> Error(simplifile.describe_error(error))
   }
 }
 
@@ -179,9 +178,9 @@ fn hex_loop(data: BitArray, acc: List(String)) -> List(String) {
 }
 
 fn byte_hex(byte: Int) -> String {
-  "0x" <> hex_digit(int.bitwise_shift_right(byte, 4)) <> hex_digit(
-    int.bitwise_and(byte, 0x0f),
-  )
+  "0x"
+  <> hex_digit(int.bitwise_shift_right(byte, 4))
+  <> hex_digit(int.bitwise_and(byte, 0x0f))
 }
 
 fn hex_digit(n: Int) -> String {
@@ -212,25 +211,3 @@ fn pad2(n: Int) -> String {
     False -> int.to_string(n)
   }
 }
-
-fn join(dir: String, name: String) -> String {
-  dir <> "/" <> name
-}
-
-@external(erlang, "dump_assets_ffi", "read_file")
-fn read_file(path: String) -> Result(BitArray, String)
-
-@external(erlang, "dump_assets_ffi", "write_bits")
-fn write_bits(path: String, data: BitArray) -> Result(Nil, String)
-
-@external(erlang, "dump_assets_ffi", "write_string")
-fn write_string(path: String, data: String) -> Result(Nil, String)
-
-@external(erlang, "dump_assets_ffi", "make_dir")
-fn make_dir(path: String) -> Result(Nil, String)
-
-@external(erlang, "dump_assets_ffi", "list_dir")
-fn list_dir(path: String) -> Result(List(String), String)
-
-@external(erlang, "dump_assets_ffi", "delete")
-fn delete(path: String) -> Result(Nil, String)
