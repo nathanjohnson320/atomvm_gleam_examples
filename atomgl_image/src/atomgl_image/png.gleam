@@ -1,10 +1,10 @@
 /// Decode 8-bit RGBA non-interlaced PNGs into AtomGL rgba8888 sprites.
 
+import atomgl_image/sprite.{type Sprite, Rgba8888}
+import atomgl_image/zlib_inflate
 import gleam/bit_array
 import gleam/int
 import gleam/result
-import image.{type Sprite, Rgba8888}
-import zlib_inflate
 
 pub type PngError {
   NotPng

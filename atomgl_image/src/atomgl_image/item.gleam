@@ -1,15 +1,13 @@
 /// AtomGL display-list helpers for decoded rgba8888 sprites.
 
+import atomgl_image/sprite.{type Sprite, Rgba8888}
+
 pub type Font {
   Default16px
 }
 
 pub type Background {
   Transparent
-}
-
-pub type Sprite {
-  Rgba8888(Int, Int, BitArray)
 }
 
 /// Constructors compile to the tuples AtomGL expects:
@@ -36,22 +34,12 @@ pub type Item {
   Rect(Int, Int, Int, Int, Int)
 }
 
-pub fn width(sprite: Sprite) -> Int {
-  let Rgba8888(w, _, _) = sprite
-  w
-}
-
-pub fn height(sprite: Sprite) -> Int {
-  let Rgba8888(_, h, _) = sprite
-  h
-}
-
 /// Draw a sprite 1:1 with a transparent background.
 pub fn image(x: Int, y: Int, sprite: Sprite) -> Item {
   Image(x, y, Transparent, sprite)
 }
 
-/// Draw a sprite scaled uniformly, like avm_badge's rickroll frames.
+/// Draw a sprite scaled uniformly.
 pub fn scaled(x: Int, y: Int, scale: Int, sprite: Sprite) -> Item {
   let Rgba8888(w, h, _) = sprite
   ScaledCroppedImage(

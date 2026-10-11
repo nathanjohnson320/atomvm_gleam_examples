@@ -6,10 +6,9 @@ description = "Show pre-decoded PNG/GIF art on the AtomGL display"
 [dependencies]
 gleam_stdlib = ">= 1.0.0 and < 2.0.0"
 atomvm_gleam = { git = "https://github.com/nathanjohnson320/atomvm_gleam", ref = "85e06c186fd81bb77443608979706c6c28cc932e" }
-# Host dump_assets tool (not used by gallery.start on the badge).
-filepath = ">= 1.0.0 and < 2.0.0"
-simplifile = ">= 2.0.0 and < 3.0.0"
+atomgl_image = { path = "../atomgl_image" }
 
 [dev_dependencies]
 gleeunit = ">= 1.0.0 and < 2.0.0"
+simplifile = ">= 2.0.0 and < 3.0.0"
 orbital = { git = "https://github.com/nathanjohnson320/orbital", ref = "3ca8377185b687d7a5591202e032c36dceaf5e5d" }

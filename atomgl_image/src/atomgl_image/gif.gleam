@@ -1,12 +1,12 @@
 /// Decode GIF87a/89a into composed rgba8888 frames for AtomGL.
 
+import atomgl_image/sprite.{type Sprite, Rgba8888}
 import gleam/bit_array
 import gleam/dict.{type Dict}
 import gleam/int
 import gleam/list
 import gleam/option.{type Option, None, Some}
 import gleam/result
-import image.{type Sprite, Rgba8888}
 
 pub type GifError {
   NotGif

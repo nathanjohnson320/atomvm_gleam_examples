@@ -1,7 +1,8 @@
-import gleam/list
-import image.{
-  type Item, type Sprite, Default16px, Rect, Text, Transparent,
+import atomgl_image/item.{
+  type Item, Default16px, Rect, Text, Transparent, image, scaled, wrap_frame,
 }
+import atomgl_image/sprite.{type Sprite}
+import gleam/list
 
 const background = 0x202020
 
@@ -15,13 +16,13 @@ pub fn render(
   gif_frames: List(Sprite),
   frame_index: Int,
 ) -> List(Item) {
-  let png_item = image.image(24, 40, png)
+  let png_item = image(24, 40, png)
   let gif_item = case gif_frames {
     [] -> Text(180, 40, Default16px, label, Transparent, <<"no gif":utf8>>)
     frames -> {
-      let index = image.wrap_frame(frame_index, list.length(frames))
+      let index = wrap_frame(frame_index, list.length(frames))
       let assert Ok(frame) = list.drop(frames, index) |> list.first
-      image.scaled(180, 40, 3, frame)
+      scaled(180, 40, 3, frame)
     }
   }
 

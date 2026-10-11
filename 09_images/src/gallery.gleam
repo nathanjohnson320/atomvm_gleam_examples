@@ -1,10 +1,11 @@
 import assets
+import atomgl_image/item
+import atomgl_image/sprite.{type Sprite}
 import atomvm_gleam/display
 import atomvm_gleam/spi
 import gleam/io
 import gleam/list
 import gleam/option.{None, Some}
-import image.{type Sprite}
 import scene
 
 const width = 320
@@ -74,7 +75,7 @@ fn loop(
   sleep(frame_ms)
   let next = case list.length(gif_frames) {
     0 -> 0
-    count -> image.wrap_frame(frame + 1, count)
+    count -> item.wrap_frame(frame + 1, count)
   }
   loop(screen, png_sprite, gif_frames, next)
 }

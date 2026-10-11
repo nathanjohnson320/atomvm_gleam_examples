@@ -1,6 +1,7 @@
 # Exercise 9, in Gleam: show PNG/GIF art on AtomGL
 
-Decode PNG and GIF **on the host** into raw rgba8888 files, embed those for the
+Decode PNG and GIF **on the host** with the shared
+[`atomgl_image`](../atomgl_image) package, embed the rgba8888 dumps for the
 badge, then push AtomGL display lists through
 [`atomvm_gleam`](https://github.com/nathanjohnson320/atomvm_gleam).
 
@@ -14,7 +15,7 @@ Assumes the AtomGL image from exercise 1 is already installed on the badge.
 ```text
 assets/src/*.png|*.gif
         │
-        ▼  gleam run -m dump_assets
+        ▼  gleam run -m dump_assets   (thin wrapper → atomgl_image/dump)
 assets/decoded/*@WxH.rgba   +   src/assets.gleam
         │
         ▼  gallery.start on AtomVM
@@ -23,18 +24,15 @@ AtomGL image / scaled_cropped_image
 
 | Path | Role |
 |------|------|
-| `assets/src/` | Source PNG/GIF (edit these) |
-| `dump_assets.gleam` | Host decoder → `.rgba` files + generated module |
-| `png.gleam` / `gif.gleam` / `zlib_inflate.gleam` | Used by the dump tool (and tests) |
+| [`../atomgl_image`](../atomgl_image) | Reusable PNG/GIF decode + dump + AtomGL helpers |
+| `assets/src/` | Source PNG/GIF for this example |
+| `dump_assets.gleam` | Example paths wired into `atomgl_image/dump` |
 | `assets/decoded/` | Raw rgba8888 dumps (`name@WxH.rgba`) |
 | `src/assets.gleam` | Generated sprites the badge loads |
-| `image.gleam` / `scene.gleam` / `gallery.gleam` | AtomGL display only |
+| `scene.gleam` / `gallery.gleam` | Display-only AtomVM app |
 
 The badge never inflates PNG or runs GIF LZW. It only loads pre-decoded
-`Rgba8888` sprites.
-
-PNG support in the dump tool is narrow (8-bit RGBA, non-interlaced, stored zlib
-blocks). GIF handles palettes, transparency, disposal, and interlacing.
+`Rgba8888` sprites from `atomgl_image/sprite`.
 
 ## Regenerate assets
 
@@ -50,6 +48,9 @@ not require a dump step.
 ## Build, flash, and monitor
 
 ```sh
+# shared package tests
+cd ../atomgl_image && gleam test && cd ../09_images
+
 gleam test
 gleam run -m orbital flash esp32
 gleam run -m orbital monitor
@@ -58,5 +59,5 @@ gleam run -m orbital monitor
 ## Replacing the demo art
 
 Drop a small PNG or GIF into `assets/src/` (keep sizes tiny — the demos are
-8×8), point `dump_assets` at the new filenames if you rename them, run the dump,
+8×8), adjust the paths in `dump_assets.gleam` if you rename them, run the dump,
 then flash.
