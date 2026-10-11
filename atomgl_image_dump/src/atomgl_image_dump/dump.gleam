@@ -1,5 +1,4 @@
 /// Host helpers: decode PNG/GIF files into `.rgba` dumps and generated Gleam.
-
 import atomgl_image/gif
 import atomgl_image/png
 import atomgl_image/sprite.{type Sprite, Rgba8888}
@@ -196,12 +195,12 @@ fn gif_frames_source(frames: List(Sprite)) -> String {
   |> list.map(fn(frame) {
     let Rgba8888(w, h, pixels) = frame
     "    Rgba8888("
-      <> int.to_string(w)
-      <> ", "
-      <> int.to_string(h)
-      <> ", <<"
-      <> hex_bytes(pixels)
-      <> ">>),\n"
+    <> int.to_string(w)
+    <> ", "
+    <> int.to_string(h)
+    <> ", <<"
+    <> hex_bytes(pixels)
+    <> ">>),\n"
   })
   |> string.concat
 }

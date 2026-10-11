@@ -9,7 +9,6 @@
 ///   --png-stem lucy --gif-stem lucy_spin \
 ///   --png-fn lucy_png --gif-fn lucy_spin_frames
 /// ```
-
 import argv
 import atomgl_image_dump/dump
 import gleam/io

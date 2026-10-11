@@ -17,7 +17,8 @@ pub fn generated_assets_match_decode_test() {
   let assert Ok(decoded) = png.decode(bytes)
   assert assets.lucy_png() == decoded
 
-  let assert Ok(gif_bytes) = simplifile.read_bits(from: "assets/src/lucy_spin.gif")
+  let assert Ok(gif_bytes) =
+    simplifile.read_bits(from: "assets/src/lucy_spin.gif")
   let assert Ok(frames) = gif.decode(gif_bytes)
   assert assets.lucy_spin_frames() == frames
   assert list.length(frames) == 8

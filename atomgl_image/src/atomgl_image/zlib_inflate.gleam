@@ -2,7 +2,6 @@
 ///
 /// Supports stored (uncompressed) deflate blocks, which is what the embedded
 /// demo PNG uses. Other block types return an error.
-
 import gleam/bit_array
 import gleam/int
 import gleam/result
@@ -103,8 +102,8 @@ fn adler_loop(data: BitArray, a: Int, b: Int) -> Int {
         int.bitwise_and(a, 0xffff),
       )
     <<c, rest:bytes>> -> {
-      let a2 = { a + c } % 65521
-      let b2 = { b + a2 } % 65521
+      let a2 = { a + c } % 65_521
+      let b2 = { b + a2 } % 65_521
       adler_loop(rest, a2, b2)
     }
     _ ->

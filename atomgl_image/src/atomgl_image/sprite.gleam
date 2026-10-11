@@ -1,5 +1,4 @@
 /// Decoded rgba8888 pixel buffers for AtomGL `{rgba8888, W, H, Pixels}`.
-
 pub type Sprite {
   Rgba8888(Int, Int, BitArray)
 }

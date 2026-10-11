@@ -1,5 +1,4 @@
 /// AtomGL display-list helpers for decoded rgba8888 sprites.
-
 import atomgl_image/sprite.{type Sprite, Rgba8888}
 
 pub type Font {

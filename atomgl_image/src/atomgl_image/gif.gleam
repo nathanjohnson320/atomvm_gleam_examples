@@ -1,5 +1,4 @@
 /// Decode GIF87a/89a into composed rgba8888 frames for AtomGL.
-
 import atomgl_image/sprite.{type Sprite, Rgba8888}
 import gleam/bit_array
 import gleam/dict.{type Dict}
@@ -35,13 +34,17 @@ fn parse_screen(data: BitArray) -> Result(List(Sprite), GifError) {
       rest:bytes,
     >> -> {
       let has_gct = int.bitwise_and(flags, 0x80) != 0
-      let gct_size = 3 * int.bitwise_shift_left(1, int.bitwise_and(flags, 7) + 1)
+      let gct_size =
+        3 * int.bitwise_shift_left(1, int.bitwise_and(flags, 7) + 1)
       use #(gct, after_gct) <- result.try(case has_gct {
         False -> Ok(#(<<>>, rest))
         True -> take_bytes(rest, gct_size)
       })
       let canvas =
-        bit_array.concat(list.repeat(item: <<0, 0, 0, 255>>, times: width * height))
+        bit_array.concat(list.repeat(
+          item: <<0, 0, 0, 255>>,
+          times: width * height,
+        ))
       read_blocks(after_gct, width, height, gct, canvas, None, None, [])
     }
     _ -> Error(Truncated)
@@ -132,16 +135,10 @@ fn read_blocks(
               }
             _ -> painted
           }
-          read_blocks(
-            after_image,
-            width,
-            height,
-            gct,
-            cleared,
-            None,
-            saved,
-            [frame, ..frames],
-          )
+          read_blocks(after_image, width, height, gct, cleared, None, saved, [
+            frame,
+            ..frames
+          ])
         }
         _ -> Error(Truncated)
       }
@@ -186,9 +183,7 @@ fn take_bytes(
   }
 }
 
-fn read_sub_blocks(
-  data: BitArray,
-) -> Result(#(BitArray, BitArray), GifError) {
+fn read_sub_blocks(data: BitArray) -> Result(#(BitArray, BitArray), GifError) {
   read_sub_blocks_loop(data, <<>>)
 }
 
@@ -207,7 +202,10 @@ fn read_sub_blocks_loop(
   }
 }
 
-fn lzw_decode(data: BitArray, min_code_size: Int) -> Result(BitArray, GifError) {
+fn lzw_decode(
+  data: BitArray,
+  min_code_size: Int,
+) -> Result(BitArray, GifError) {
   case min_code_size < 2 || min_code_size > 8 {
     True -> Error(BadLzw)
     False -> {
@@ -345,7 +343,10 @@ fn process_code(
                 Ok(first) -> {
                   let entry = bit_array.append(prev, first)
                   let #(table2, next2) = case next_code < 4096 {
-                    True -> #(dict.insert(table, next_code, entry), next_code + 1)
+                    True -> #(
+                      dict.insert(table, next_code, entry),
+                      next_code + 1,
+                    )
                     False -> #(table, next_code)
                   }
                   Ok(#(
