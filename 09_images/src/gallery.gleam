@@ -57,7 +57,7 @@ pub fn start() -> Nil {
           spi_host: bus,
         ))
       // Pre-decoded rgba8888 from `gleam run -m dump_assets`.
-      loop(screen, assets.demo_png(), assets.demo_gif_frames(), 0)
+      loop(screen, assets.lucy_png(), assets.lucy_spin_frames(), 0)
     }
   }
 }
