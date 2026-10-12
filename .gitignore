@@ -1,4 +1,4 @@
 firmware_images
 wasm_out.artifacts/
-
+wasm_out/
 .artifacts/
