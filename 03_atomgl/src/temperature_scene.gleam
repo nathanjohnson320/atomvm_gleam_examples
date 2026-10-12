@@ -67,7 +67,11 @@ const bulb_wall = 4
 
 /// First item is on top and the last is drawn first, so the background
 /// rectangle stays at the end of the list.
-pub fn render(width: Int, height: Int, temperature: Option(Float)) -> List(Item) {
+pub fn render(
+  width: Int,
+  height: Int,
+  temperature: Option(Float),
+) -> List(Item) {
   let mercury = mercury_colour(temperature)
   let column = mercury_height(temperature)
 

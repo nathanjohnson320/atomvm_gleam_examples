@@ -1,15 +1,11 @@
 import atomvm_gleam/i2c
+import gleam/erlang/process
 import gleam/float
 import gleam/int
 import gleam/io
 import gleam/result
 import tmp103
 
-@external(erlang, "timer", "sleep")
-fn sleep(milliseconds: Int) -> Nil
-
-/// AtomVM entrypoint. The package name in `gleam.toml` is `temperature`, so
-/// this module is the one Orbital marks as the start module.
 pub fn start() -> Nil {
   case open_bus() {
     Error(message) -> {
@@ -29,10 +25,11 @@ fn open_bus() -> Result(i2c.Bus, String) {
 
 fn loop(bus: i2c.Bus) -> Nil {
   case tmp103.read_fahrenheit(bus) {
-    Ok(fahrenheit) -> io.println("Temperature: " <> format_f(fahrenheit) <> " °F")
+    Ok(fahrenheit) ->
+      io.println("Temperature: " <> format_f(fahrenheit) <> " °F")
     Error(message) -> io.println(message)
   }
-  sleep(1000)
+  process.sleep(1000)
   loop(bus)
 }
 

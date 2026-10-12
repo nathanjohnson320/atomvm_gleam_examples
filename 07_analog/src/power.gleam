@@ -1,4 +1,5 @@
 import atomvm_gleam/adc
+import gleam/erlang/process
 import gleam/int
 import gleam/io
 import gleam/option.{None, Some}
@@ -23,9 +24,6 @@ const full = 4200
 
 /// VBUS at or above this means USB is supplying power.
 const usb_present_mv = 4000
-
-@external(erlang, "timer", "sleep")
-fn sleep(milliseconds: Int) -> Nil
 
 pub fn start() -> Nil {
   case open() {
@@ -59,7 +57,7 @@ fn loop(unit: adc.Unit, battery: adc.Channel, vbus: adc.Channel) -> Nil {
     Error(message), _ -> io.println(message)
     _, Error(message) -> io.println(message)
   }
-  sleep(interval_ms)
+  process.sleep(interval_ms)
   loop(unit, battery, vbus)
 }
 

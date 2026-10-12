@@ -1,5 +1,6 @@
 import atomvm_gleam/display
 import atomvm_gleam/spi
+import gleam/erlang/process
 import gleam/io
 import gleam/option.{None, Some}
 import temperature_scene
@@ -9,11 +10,6 @@ const width = 320
 
 const height = 240
 
-@external(erlang, "timer", "sleep")
-fn sleep(milliseconds: Int) -> Nil
-
-/// AtomVM entrypoint. The package name in `gleam.toml` is `display`, so this
-/// module is the one Orbital marks as the start module.
 pub fn start() -> Nil {
   case
     spi.open(
@@ -63,6 +59,6 @@ fn loop(screen: display.Display, sensor: Bus) -> Nil {
     screen,
     temperature_scene.render(width, height, Some(temperature)),
   )
-  sleep(1000)
+  process.sleep(1000)
   loop(screen, sensor)
 }

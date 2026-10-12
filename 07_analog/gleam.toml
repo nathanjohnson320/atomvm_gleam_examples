@@ -6,6 +6,7 @@ description = "Read the badge battery and VBUS voltages on the console"
 [dependencies]
 gleam_stdlib = ">= 1.0.0 and < 2.0.0"
 atomvm_gleam = { git = "https://github.com/nathanjohnson320/atomvm_gleam", ref = "5fbe285402a78b4930299b0aee4db2ef09a43096" }
+gleam_erlang = ">= 1.3.0 and < 2.0.0"
 
 [dev_dependencies]
 gleeunit = ">= 1.0.0 and < 2.0.0"

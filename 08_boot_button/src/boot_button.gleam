@@ -26,12 +26,6 @@ type State {
   State(display: display.Display, gpio: gpio.Gpio, count: Int)
 }
 
-/// AtomVM entrypoint. The package name in `gleam.toml` is `boot_button`, so
-/// this module is the one Orbital marks as the start module.
-///
-/// Starts an actor (Gleam counterpart of the Elixir GenServer in `065_boot`)
-/// that owns the display and GPIO interrupt mailbox, then parks forever so
-/// AtomVM does not exit.
 pub fn start() -> Nil {
   let assert Ok(_) =
     actor.new_with_initialiser(5000, initialise)

@@ -7,6 +7,7 @@ description = "Show pre-decoded PNG/GIF art on the AtomGL display"
 gleam_stdlib = ">= 1.0.0 and < 2.0.0"
 atomvm_gleam = { git = "https://github.com/nathanjohnson320/atomvm_gleam", ref = "85e06c186fd81bb77443608979706c6c28cc932e" }
 atomgl_image = { path = "../atomgl_image" }
+gleam_erlang = ">= 1.3.0 and < 2.0.0"
 
 [dev_dependencies]
 gleeunit = ">= 1.0.0 and < 2.0.0"

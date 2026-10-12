@@ -3,6 +3,7 @@ import atomgl_image/item
 import atomgl_image/sprite.{type Sprite}
 import atomvm_gleam/display
 import atomvm_gleam/spi
+import gleam/erlang/process
 import gleam/io
 import gleam/list
 import gleam/option.{None, Some}
@@ -14,10 +15,6 @@ const height = 240
 
 const frame_ms = 120
 
-@external(erlang, "timer", "sleep")
-fn sleep(milliseconds: Int) -> Nil
-
-/// AtomVM entrypoint. The package name in `gleam.toml` is `gallery`.
 pub fn start() -> Nil {
   case
     spi.open(
@@ -72,7 +69,7 @@ fn loop(
     screen,
     scene.render(width, height, png_sprite, gif_frames, frame),
   )
-  sleep(frame_ms)
+  process.sleep(frame_ms)
   let next = case list.length(gif_frames) {
     0 -> 0
     count -> item.wrap_frame(frame + 1, count)

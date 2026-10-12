@@ -1,4 +1,5 @@
 import atomvm_gleam/spi.{type Spi}
+import gleam/erlang/process
 import gleam/int
 import gleam/io
 import gleam/list
@@ -12,14 +13,9 @@ const hue_step = 3
 
 const interval_ms = 10
 
-@external(erlang, "timer", "sleep")
-fn sleep(milliseconds: Int) -> Nil
-
 @external(erlang, "atomvm", "random")
 fn random() -> Int
 
-/// AtomVM entrypoint. The package name in `gleam.toml` is `rainbow`, so this
-/// module is the one Orbital marks as the start module.
 pub fn start() -> Nil {
   case sk6812.open() {
     Error(message) -> {
@@ -35,8 +31,8 @@ fn loop(bus: Spi, hue: Int) -> Nil {
     Ok(Nil) -> Nil
     Error(message) -> io.println(message)
   }
-  sleep(interval_ms)
-  loop(bus, {hue + hue_step} % 360)
+  process.sleep(interval_ms)
+  loop(bus, { hue + hue_step } % 360)
 }
 
 // The four LEDs sit an equal distance apart on the colour wheel, and the
@@ -44,17 +40,17 @@ fn loop(bus: Spi, hue: Int) -> Nil {
 // `atomvm:random/0`, so each LED is 0..255.
 fn pixels(hue: Int) -> List(#(Int, Int, Int)) {
   use i <- list.map([0, 1, 2, 3])
-  let led_hue = {hue + i * {360 / pixel_count}} % 360
+  let led_hue = { hue + i * { 360 / pixel_count } } % 360
   hsv_to_rgb(led_hue, 255, int.absolute_value(random()) % 256)
 }
 
 /// Hue 0..359, saturation and value 0..255. Integer maths only.
 pub fn hsv_to_rgb(hue: Int, saturation: Int, value: Int) -> #(Int, Int, Int) {
   let sector = hue / 60
-  let offset = {hue % 60} * 255 / 60
-  let p = value * {255 - saturation} / 255
-  let q = value * {255 - saturation * offset / 255} / 255
-  let t = value * {255 - saturation * {255 - offset} / 255} / 255
+  let offset = { hue % 60 } * 255 / 60
+  let p = value * { 255 - saturation } / 255
+  let q = value * { 255 - saturation * offset / 255 } / 255
+  let t = value * { 255 - saturation * { 255 - offset } / 255 } / 255
   sector_rgb(sector, value, p, q, t)
 }
 
