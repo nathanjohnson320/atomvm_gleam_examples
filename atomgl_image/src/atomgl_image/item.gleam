@@ -39,14 +39,19 @@ pub fn image(x: Int, y: Int, sprite: Sprite) -> Item {
 }
 
 /// Draw a sprite scaled uniformly.
-pub fn scaled(x: Int, y: Int, scale: Int, sprite: Sprite) -> Item {
+///
+/// AtomGL blends every non-opaque pixel onto `bg` — there is no true
+/// transparency on `scaled_cropped_image` — so pass the colour behind the
+/// sprite (usually the scene background), not black, or alpha art gets a
+/// black matte.
+pub fn scaled(x: Int, y: Int, scale: Int, bg: Int, sprite: Sprite) -> Item {
   let Rgba8888(w, h, _) = sprite
   ScaledCroppedImage(
     x,
     y,
     w * scale,
     h * scale,
-    0x000000,
+    bg,
     0,
     0,
     scale,

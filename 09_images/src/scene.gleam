@@ -17,13 +17,15 @@ pub fn render(
   frame_index: Int,
 ) -> List(Item) {
   // 32×32 Lucy, shown 2× so she stays readable on the 320×240 panel.
-  let png_item = scaled(24, 48, 2, png)
+  // Pass `background` as the blend target: Lucy's PNG has real alpha, and
+  // AtomGL mattes non-opaque pixels onto this colour (not the scene behind).
+  let png_item = scaled(24, 48, 2, background, png)
   let gif_item = case gif_frames {
     [] -> Text(176, 48, Default16px, label, Transparent, <<"no gif":utf8>>)
     frames -> {
       let index = wrap_frame(frame_index, list.length(frames))
       let assert Ok(frame) = list.drop(frames, index) |> list.first
-      scaled(176, 48, 2, frame)
+      scaled(176, 48, 2, background, frame)
     }
   }
 

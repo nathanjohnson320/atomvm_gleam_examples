@@ -12,7 +12,7 @@ Gleam does not replace that firmware.
 ## The application
 
 `src/boot_button.gleam` starts a [`gleam_otp`](https://github.com/gleam-lang/otp)
-actor — the Gleam counterpart of the Elixir GenServer in `065_boot`. The actor
+actor - the Gleam counterpart of the Elixir GenServer in `065_boot`. The actor
 opens SPI and the display port via the
 [`atomvm_gleam`](https://github.com/nathanjohnson320/atomvm_gleam) package, arms GPIO 0 with
 `attach_interrupt(gpio.pin(0), …)` (same shape as `065_boot`), then handles each
