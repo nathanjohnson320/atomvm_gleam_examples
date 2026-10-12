@@ -31,12 +31,6 @@ type State {
   )
 }
 
-/// AtomVM entrypoint. The package name in `gleam.toml` is `keyboard`, so this
-/// module is the one Orbital marks as the start module.
-///
-/// Starts an actor (Gleam counterpart of the Elixir GenServer in `06_keyboard`)
-/// that owns the GPIO interrupt mailbox, then parks forever so AtomVM does not
-/// exit.
 pub fn start() -> Nil {
   let assert Ok(_) =
     actor.new_with_initialiser(5000, initialise)

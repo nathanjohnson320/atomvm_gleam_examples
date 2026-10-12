@@ -27,8 +27,6 @@ const usb_present_mv = 4000
 @external(erlang, "timer", "sleep")
 fn sleep(milliseconds: Int) -> Nil
 
-/// AtomVM entrypoint. The package name in `gleam.toml` is `power`, so this
-/// module is the one Orbital marks as the start module.
 pub fn start() -> Nil {
   case open() {
     Error(message) -> io.println(message)
