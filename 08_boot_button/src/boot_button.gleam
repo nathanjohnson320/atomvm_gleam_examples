@@ -1,15 +1,15 @@
 import atomvm_gleam/display
 import atomvm_gleam/gpio
 import atomvm_gleam/spi
+import counter_scene
 import gleam/dynamic.{type Dynamic}
 import gleam/erlang/atom
 import gleam/erlang/process
 import gleam/int
 import gleam/io
-import gleam/otp/actor
 import gleam/option.{None, Some}
+import gleam/otp/actor
 import gleam/result
-import counter_scene
 
 const width = 320
 
@@ -104,7 +104,6 @@ fn initialise(
   )
 }
 
-/// Map a driver `Result` to `Result(a, String)`, logging on failure.
 fn or_log(
   value: Result(a, e),
   message: String,
@@ -116,15 +115,15 @@ fn or_log(
   })
 }
 
-fn handle_message(state: State, message: Message) -> actor.Next(State, Message) {
+fn handle_message(
+  state: State,
+  message: Message,
+) -> actor.Next(State, Message) {
   case message {
     GpioInterrupt -> {
       let count = state.count + 1
       io.println("Boot pressed: " <> int.to_string(count))
-      display.update(
-        state.display,
-        counter_scene.render(width, height, count),
-      )
+      display.update(state.display, counter_scene.render(width, height, count))
       // Block through the bounce window (AtomVM-safe). Flush any edges that
       // queued while we slept.
       process.sleep(debounce_ms)

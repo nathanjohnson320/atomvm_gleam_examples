@@ -1,0 +1,14 @@
+---
+description: Definition of done — verify with gleam; pause for merge or destructive work
+alwaysApply: true
+---
+
+# Workflow
+
+Do not stop for format, scoped tests, or verification the agent can run. Run those yourself. Do not ask the user to run them.
+
+**Stop and ask** only for: merge to `main`, force-push, hard reset, production/badge credential choices the user must make, or missing product intent.
+
+Prefer tools over asking the user to run commands. Tests and matching conventions ship with the change — not as a follow-up question.
+
+Coordinated work across several example crates or a shared library plus consumers: use the `land-change` skill. Finish with `general-git-and-pr`.

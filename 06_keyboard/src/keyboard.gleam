@@ -75,7 +75,6 @@ fn initialise(
   )
 }
 
-/// Map a driver `Result` to `Result(a, String)`, logging on failure.
 fn or_log(
   value: Result(a, e),
   message: String,

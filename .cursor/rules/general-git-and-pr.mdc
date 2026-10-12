@@ -1,0 +1,56 @@
+---
+description: Git commits and GitHub PRs — verify with Gleam; ask before merge or destructive git
+alwaysApply: true
+---
+
+# Git and PR operations
+
+Apply when finishing a change, or when the user asks to commit, push, open a PR, or run related `git`/`gh` commands.
+
+## Workspace layout
+
+Run all git/gh commands from the **repo root** (the directory that contains `.git`).
+
+## Issue tracker
+
+- If the repo uses a ticket tracker, put the key in branch names, commit messages, and the PR body.
+- Do not invent or fabricate ticket keys.
+- Small chores may omit a ticket.
+
+## Branching
+
+- Base branch: **`main`** (verify with `git remote show origin` if unsure).
+- Branch names: ticket key plus a short descriptor, or a short descriptor for small chores (e.g. `nj/atomgl-images`, `fix/gpio-bounce`).
+
+## Commits
+
+- Commit when the user asks, or when finishing a change they asked you to land. Before committing, run in parallel: `git status`, `git diff`, `git log --oneline -10`.
+- Follow **conventional commits** and match recent commits in this repo:
+  - `feat: ...`
+  - `fix: ...`
+  - `chore: ...`
+- Use a HEREDOC for the commit message.
+- Never commit Wi-Fi/MQTT passwords, `.env`, credentials, or secret exports.
+- Never use destructive git commands (`push --force`, hard reset, etc.) unless explicitly requested. Never force-push `main`. Ask before those.
+
+### Pre-commit checks (Gleam)
+
+When `gleam.toml` is present in a crate you changed, before commit/push run locally (do **not** wait for CI):
+
+- `gleam format` on touched files
+- `gleam test` in each crate you changed — not every example unless the change is in a shared package (`atomgl_image`) or spans many crates
+
+Read the example's `README.md` or root `AGENTS.md` for flash/monitor steps; do not require a physical badge for every change.
+
+## Pull requests
+
+- When asked to open a PR (or when finishing work the user asked to land with a PR): `git push -u origin HEAD`, then **`gh pr create --draft`** from the repo root.
+- Ask only before **merge**, force-push, or other destructive git.
+- If a PR for this branch already exists, push and return its URL — do not open a second PR.
+- Before opening, run: `git status`, diff against `main`, and `git log main..HEAD --oneline` to capture **all** commits on the branch.
+
+Typical sections when there is no template:
+
+1. **Summary** — what and why
+2. **Details** — technical approach
+3. **How to test** — `gleam test` paths; flash steps only if hardware-relevant

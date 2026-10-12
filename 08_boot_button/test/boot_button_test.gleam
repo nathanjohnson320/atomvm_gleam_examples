@@ -44,9 +44,10 @@ pub fn render_draws_sixteen_pips_test() {
     })
 
   assert list.length(pips) == 16
-  assert pips == [
-    20, 38, 56, 74, 92, 110, 128, 146, 164, 182, 200, 218, 236, 254, 272, 290,
-  ]
+  assert pips
+    == [
+      20, 38, 56, 74, 92, 110, 128, 146, 164, 182, 200, 218, 236, 254, 272, 290,
+    ]
 }
 
 pub fn third_press_lights_three_pips_test() {

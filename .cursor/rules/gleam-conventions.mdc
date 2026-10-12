@@ -1,0 +1,44 @@
+---
+description: Gleam + AtomVM example conventions — crates, Orbital, start loops, FFI
+globs: ["**/*.gleam", "**/*.erl"]
+alwaysApply: false
+---
+
+# Gleam conventions (AtomVM)
+
+This repo is **AtomVM badge examples in Gleam**, not a Wisp/Lustre web app. No Postgres, Mist, or Vite UI.
+
+## Layout
+
+Each example (and library) is its own Gleam package with `gleam.toml`, `src/`, and usually `test/`:
+
+| Path | Role |
+| --- | --- |
+| `NN_*` / `99_*` | Flashable badge apps (Orbital packs BEAM → `.avm`) |
+| `atomgl_image/` | Shared PNG/GIF → rgba8888 library |
+| `atomgl_image_dump/` | Host-only CLI to dump assets / generate Gleam |
+
+Pin Gleam and OTP in each package's `.tool-versions` (and the repo root). Prefer `atomvm_gleam` for GPIO, I²C, ADC, display, etc. instead of raw NIFs when that package already wraps them.
+
+## Entrypoints
+
+- Orbital uses the **package name** in `gleam.toml` as the start module. Put `pub fn start()` there.
+- `start` must not return: when it does, AtomVM stops the app and the board sleeps. Park with a loop, `process.sleep_forever()`, or an actor that never stops owning the work.
+- Keep hardware open in the process that should receive `{gpio_interrupt, Pin}` (and similar mailbox messages).
+
+## Language
+
+- Explicit types; `Result` at driver / FFI boundaries. Prefer `result.try` / `use` over nested cases.
+- `let assert` only when failure is impossible or should crash in each example's init path.
+- Small modules; match neighboring examples' names and import style.
+- Erlang `.erl` FFI: keep thin; put protocol and policy in Gleam when practical.
+
+## Commands
+
+```bash
+cd 01_hello_world && gleam test
+cd 01_hello_world && gleam run -m orbital flash   # see that example's README
+gleam format path/to/file.gleam
+```
+
+Run `gleam test` / `gleam format` in the **crate you changed**, not every example unless the change is shared (`atomgl_image`).

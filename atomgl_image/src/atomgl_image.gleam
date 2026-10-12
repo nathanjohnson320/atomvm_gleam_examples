@@ -5,6 +5,5 @@
 
 import atomgl_image/sprite.{type Sprite}
 
-/// Re-export so the package root documents the core pixel type.
 pub type ImageSprite =
   Sprite

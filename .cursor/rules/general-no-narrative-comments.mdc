@@ -1,0 +1,28 @@
+---
+description: No narrative comments that restate the code
+alwaysApply: true
+---
+
+# No narrative comments
+
+Do not add comments that narrate what code does, restate a bug that was fixed, or explain obvious intent.
+
+```gleam
+// ❌ BAD — narrates the next line
+// Open the GPIO port
+use pins <- result.try(gpio.open() |> ...)
+```
+
+```gleam
+// ❌ BAD — restates the function
+/// Map a Result and log on failure.
+fn or_log(...)
+```
+
+```gleam
+// ✅ GOOD — non-obvious AtomVM / hardware constraint the code alone cannot convey
+// Open hardware in this process so `{gpio_interrupt, Pin}` is delivered here.
+use pins <- result.try(gpio.open() |> ...)
+```
+
+Module docs (`///` / `////`) that describe public API, AtomVM entrypoint contracts, or Orbital packaging are fine. Prefer renaming or restructuring over explaining the obvious.

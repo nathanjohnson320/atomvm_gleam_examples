@@ -1,0 +1,11 @@
+---
+description: How the agent should work in this AtomVM Gleam examples repo
+alwaysApply: true
+---
+
+# Agent behavior
+
+- Do only what was asked. No drive-by refactors, extra generators, or new dependencies.
+- Use `gleam` (and Orbital where the example README says so). Do not invent Mix, Phoenix, Wisp, Lustre, or a web `server/` / `ui/` layout.
+- Follow neighboring examples for structure: one Gleam package per exercise, `start` that does not return, Orbital for flash.
+- Secrets: `general-secrets`. Landing a change: `general-workflow` and `general-git-and-pr` (verify; ask before merge or destructive git).
