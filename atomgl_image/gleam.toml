@@ -1,0 +1,11 @@
+name = "atomgl_image"
+version = "1.0.0"
+gleam = ">= 1.18.1"
+description = "PNG/GIF decode and AtomGL rgba8888 helpers for Gleam"
+
+[dependencies]
+gleam_stdlib = ">= 1.0.0 and < 2.0.0"
+
+[dev_dependencies]
+gleeunit = ">= 1.0.0 and < 2.0.0"
+simplifile = ">= 2.0.0 and < 3.0.0"

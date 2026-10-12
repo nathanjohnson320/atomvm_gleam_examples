@@ -26,7 +26,7 @@ packages = [
   { name = "gleam_time", version = "1.11.0", build_tools = ["gleam"], requirements = ["gleam_stdlib"], otp_app = "gleam_time", source = "hex", outer_checksum = "3AB789C3ED4EB9DDA7283F46C3CF83A5487C9CFB790DC3FF8F8ACB5BF7B7A6C1" },
   { name = "gleeunit", version = "1.11.0", build_tools = ["gleam"], requirements = ["gleam_stdlib"], otp_app = "gleeunit", source = "hex", outer_checksum = "EC31ABA74256AEA531EDF8169931D775BBB384FED0A8A1BDC4DD9354E3E21826" },
   { name = "hoist", version = "1.0.0", build_tools = ["gleam"], requirements = ["gleam_regexp", "gleam_stdlib"], otp_app = "hoist", source = "hex", outer_checksum = "FDB18604BA29BD58809DCA2D05674DD70123645491DBB4E8B8ACC4A06DB642AC" },
-  { name = "orbital", version = "1.1.0", build_tools = ["gleam"], requirements = ["argv", "atomvm_packbeam", "envoy", "filepath", "glam", "gleam_community_ansi", "gleam_crypto", "gleam_erlang", "gleam_http", "gleam_httpc", "gleam_json", "gleam_package_interface", "gleam_stdlib", "hoist", "simplifile", "temporary", "term_size", "tom", "uf2tool"], source = "git", repo = "https://github.com/nathanjohnson320/orbital", commit = "ba9ccc1d430ac10d6d0dac6f840678534e78a5fb" },
+  { name = "orbital", version = "1.1.0", build_tools = ["gleam"], requirements = ["argv", "atomvm_packbeam", "envoy", "filepath", "glam", "gleam_community_ansi", "gleam_crypto", "gleam_erlang", "gleam_http", "gleam_httpc", "gleam_json", "gleam_package_interface", "gleam_stdlib", "hoist", "simplifile", "temporary", "term_size", "tom", "uf2tool"], source = "git", repo = "https://github.com/nathanjohnson320/orbital", commit = "59857b0ca7cb63ff6652ad193d81e96df80c6e58" },
   { name = "simplifile", version = "2.7.0", build_tools = ["gleam"], requirements = ["filepath", "gleam_stdlib"], otp_app = "simplifile", source = "hex", outer_checksum = "A2727627B063E87351934C7F7F008F2D1FDB16F6DE0B8C79F9E46459CFC9C164" },
   { name = "temporary", version = "1.0.0", build_tools = ["gleam"], requirements = ["envoy", "exception", "filepath", "gleam_crypto", "gleam_stdlib", "simplifile"], otp_app = "temporary", source = "hex", outer_checksum = "51C0FEF4D72CE7CA507BD188B21C1F00695B3D5B09D7DFE38240BFD3A8E1E9B3" },
   { name = "term_size", version = "1.0.1", build_tools = ["gleam"], requirements = ["gleam_stdlib"], otp_app = "term_size", source = "hex", outer_checksum = "D00BD2BC8FB3EBB7E6AE076F3F1FF2AC9D5ED1805F004D0896C784D06C6645F1" },
@@ -37,4 +37,4 @@ packages = [
 [requirements]
 gleam_stdlib = { version = ">= 1.0.0 and < 2.0.0" }
 gleeunit = { version = ">= 1.0.0 and < 2.0.0" }
-orbital = { git = "https://github.com/nathanjohnson320/orbital", ref = "ba9ccc1d430ac10d6d0dac6f840678534e78a5fb" }
+orbital = { git = "https://github.com/nathanjohnson320/orbital", ref = "59857b0" }

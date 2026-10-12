@@ -1,0 +1,14 @@
+name = "atomgl_image_dump"
+version = "1.0.0"
+gleam = ">= 1.18.1"
+description = "Host tool: dump PNG/GIF to AtomGL rgba8888 assets"
+
+[dependencies]
+gleam_stdlib = ">= 1.0.0 and < 2.0.0"
+filepath = ">= 1.0.0 and < 2.0.0"
+simplifile = ">= 2.0.0 and < 3.0.0"
+argv = ">= 1.0.0 and < 2.0.0"
+atomgl_image = { path = "../atomgl_image" }
+
+[dev_dependencies]
+gleeunit = ">= 1.0.0 and < 2.0.0"

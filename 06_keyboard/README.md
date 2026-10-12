@@ -12,7 +12,7 @@ Gleam does not replace that firmware.
 ## The application
 
 `src/keyboard.gleam` starts a [`gleam_otp`](https://github.com/gleam-lang/otp)
-actor — the Gleam counterpart of the Elixir GenServer in `06_keyboard`. The
+actor the Gleam counterpart of the Elixir GenServer in `06_keyboard`. The
 actor opens the GPIO port via the
 [`atomvm_gleam`](https://github.com/nathanjohnson320/atomvm_gleam) package (same shape as
 `08_boot_button`) so `{gpio_interrupt, Pin}` lands in that process.
