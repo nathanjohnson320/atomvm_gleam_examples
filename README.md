@@ -38,7 +38,7 @@ Shared helpers:
 - [`atomgl_image`](atomgl_image) — sprite / display-list helpers for AtomGL
 - [`atomgl_image_dump`](atomgl_image_dump) — host tool to turn PNG/GIF into badge assets
 
-Each example has its own README with pin notes and flash steps.
+Each example’s README is a one-liner plus flash commands.
 
 ## Flash and monitor
 
