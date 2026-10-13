@@ -31,6 +31,7 @@ gleam run -m orbital install
 | [`07_analog`](07_analog) | Battery / USB voltage via ADC |
 | [`08_boot_button`](08_boot_button) | Count boot-button presses on screen |
 | [`09_images`](09_images) | PNG/GIF art on AtomGL (decoded on the host) |
+| [`10_accelerometer`](10_accelerometer) | Tilt Lucy on screen with the SC7A20 |
 
 Shared helpers:
 
