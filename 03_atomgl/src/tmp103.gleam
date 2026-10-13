@@ -1,18 +1,30 @@
+import atomvm_gleam/i2c.{type Bus}
 import gleam/float
 import gleam/int
+import gleam/result
 
-/// Opaque handle for the badge I²C bus.
-pub type Bus
+const address = 0x70
 
-@external(erlang, "tmp103_ffi", "open")
-pub fn open() -> Bus
-
-@external(erlang, "tmp103_ffi", "read_celsius")
-fn read_celsius(bus: Bus) -> Int
+const temperature_register = 0x00
 
 /// TMP103A at 0x70. Register 0x00 is one signed byte, 1 LSB = 1 °C.
-pub fn read(bus: Bus) -> Float {
-  fahrenheit(read_celsius(bus))
+pub fn read(bus: Bus) -> Result(Float, String) {
+  use celsius <- result.try(read_celsius(bus))
+  Ok(fahrenheit(celsius))
+}
+
+/// TMP103A temperature in °C.
+pub fn read_celsius(bus: Bus) -> Result(Int, String) {
+  use data <- result.try(
+    i2c.read_bytes(bus, address, temperature_register, 1)
+    |> result.map_error(fn(error) {
+      "TMP103 read failed: " <> i2c.error_to_string(error)
+    }),
+  )
+  case data {
+    <<celsius:signed-size(8)>> -> Ok(celsius)
+    _ -> Error("TMP103 read failed: unexpected payload")
+  }
 }
 
 /// Rounded to two decimal places, matching the Elixir driver.

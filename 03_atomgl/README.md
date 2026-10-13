@@ -17,9 +17,9 @@ and runs the loop. `src/temperature_scene.gleam` builds the display list, and
 `src/tmp103.gleam` converts the sensor reading. `display.start` is the entry
 point. Orbital finds it because the package name in `gleam.toml` is `display`.
 
-Badge pin and panel options stay in the application.
-`src/tmp103_ffi.erl` is a small Erlang side for I²C open and the Celsius
-read. Other exercises use `atomvm_gleam/i2c` for the same bus.
+Badge pin and panel options stay in the application. I²C open and the Celsius
+read use [`atomvm_gleam/i2c`](https://github.com/nathanjohnson320/atomvm_gleam),
+same as the other sensor exercises.
 
 The scene is not an `avm_scene` process. That library is Elixir, so it is not
 a Gleam dependency. The loop pushes the display list through

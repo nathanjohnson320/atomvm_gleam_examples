@@ -6,6 +6,7 @@ description = "Show the badge temperature on the AtomGL display"
 [dependencies]
 gleam_stdlib = ">= 1.0.0 and < 2.0.0"
 atomvm_gleam = ">= 0.7.0-beta.0-2 and < 0.8.0"
+gleam_erlang = ">= 1.3.0 and < 2.0.0"
 
 [dev_dependencies]
 gleeunit = ">= 1.0.0 and < 2.0.0"
