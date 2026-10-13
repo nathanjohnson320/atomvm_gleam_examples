@@ -1,3 +1,4 @@
+import atomvm_gleam/atomvm
 import atomvm_gleam/spi.{type Spi}
 import gleam/erlang/process
 import gleam/int
@@ -12,9 +13,6 @@ const pixel_count = 4
 const hue_step = 3
 
 const interval_ms = 10
-
-@external(erlang, "atomvm", "random")
-fn random() -> Int
 
 pub fn start() -> Nil {
   case sk6812.open() {
@@ -41,7 +39,7 @@ fn loop(bus: Spi, hue: Int) -> Nil {
 fn pixels(hue: Int) -> List(#(Int, Int, Int)) {
   use i <- list.map([0, 1, 2, 3])
   let led_hue = { hue + i * { 360 / pixel_count } } % 360
-  hsv_to_rgb(led_hue, 255, int.absolute_value(random()) % 256)
+  hsv_to_rgb(led_hue, 255, int.absolute_value(atomvm.random()) % 256)
 }
 
 /// Hue 0..359, saturation and value 0..255. Integer maths only.
