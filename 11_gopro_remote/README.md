@@ -12,8 +12,7 @@ A thin status bar shows battery, REC/idle, `i/n`, and the filename. This is
    **media** or **live preview**. That wakes Wi‑Fi *and* DHCP. Then fully leave
    the GoPro SSID / kill Quik’s hold on it so the badge can take the client
    slot. Without this step the badge often associates (`STA_CONNECTED`) but
-   never gets an IP — the screen used to sit on “Connecting…” forever; it now
-   shows “Assoc OK, no DHCP” and retries.
+   never gets an IP — the screen retries “Waiting for DHCP…”.
 3. Put SSID/PSK from **Connections → Camera Info** in `src/config.gleam`
    locally — do not commit real values.
 

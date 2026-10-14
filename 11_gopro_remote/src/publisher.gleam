@@ -111,10 +111,8 @@ fn show(screen: display.Display, view: gallery_scene.View) -> Nil {
   display.update(screen, gallery_scene.render(width, height, view))
 }
 
-/// GoPro often associates (`STA_CONNECTED`) but never DHCP-leases until Quik
-/// has primed the AP and no other client holds the single slot. Association
-/// alone is not enough — we need `GOT_IP`. Short hostname avoids a DHCP stall
-/// on AtomVM's long default `atomvm-<mac>` name.
+/// GoPro often associates but never DHCP-leases until Quik has primed the AP.
+/// Retry with a short timeout so the screen stays responsive.
 fn connect_sta(
   screen: display.Display,
   attempts attempts: Int,
@@ -126,86 +124,29 @@ fn connect_sta(
   )
   io.println("Wi-Fi attempt " <> int.to_string(try_n) <> "/5")
 
-  let started =
-    network.start(
-      network.StaConfig(
-        managed: False,
-        ssid: Some(config.wifi_ssid),
-        psk: Some(config.wifi_psk),
-        dhcp_hostname: Some("badge"),
-        notify: process.self(),
-      ),
-      None,
-    )
-
-  case started {
-    Error(error) ->
-      fail_or_retry(screen, attempts, network.error_to_string(error))
-    Ok(Nil) ->
-      // If DHCP is going to work it usually answers within ~10–15s after
-      // associate; hanging 45s just looks "stuck" with no screen update.
-      case await_got_ip(18_000) {
-        Ok(info) -> Ok(info)
-        Error(detail) -> {
-          let _ = network.stop()
-          fail_or_retry(screen, attempts, detail)
+  case network.wait_for_sta(config.wifi_ssid, config.wifi_psk, 18_000) {
+    Ok(info) -> Ok(info)
+    Error(error) -> {
+      let detail = network.error_to_string(error)
+      io.println("Wi-Fi failed (" <> detail <> ")")
+      let _ = network.stop()
+      case attempts <= 1 {
+        True ->
+          Error(
+            "No IP from "
+            <> config.wifi_ssid
+            <> " ("
+            <> detail
+            <> "). Quik-prime, leave SSID, retry.",
+          )
+        False -> {
+          show(screen, gallery_scene.Connecting("Waiting for DHCP..."))
+          process.sleep(2500)
+          connect_sta(screen, attempts: attempts - 1)
         }
       }
-  }
-}
-
-fn fail_or_retry(
-  screen: display.Display,
-  attempts: Int,
-  detail: String,
-) -> Result(network.IpInfo, String) {
-  let hint = dhcp_hint(detail)
-  io.println("Wi-Fi failed (" <> detail <> ")")
-  case attempts <= 1 {
-    True ->
-      Error(
-        "No IP from " <> config.wifi_ssid <> " (" <> detail <> "). " <> hint,
-      )
-    False -> {
-      show(screen, gallery_scene.Connecting(hint))
-      process.sleep(2500)
-      connect_sta(screen, attempts: attempts - 1)
     }
   }
-}
-
-fn dhcp_hint(detail: String) -> String {
-  // AtomGL default16px is ASCII-ish; Unicode dashes garble on screen.
-  case detail {
-    "associated_no_ip" -> "Assoc OK, no DHCP - Quik again"
-    "disconnected" -> "Dropped - retrying"
-    _ -> "Waiting for DHCP..."
-  }
-}
-
-@external(erlang, "gopro_net_ffi", "await_got_ip")
-fn await_got_ip_ffi(
-  timeout_ms: Int,
-) -> Result(
-  #(#(Int, Int, Int, Int), #(Int, Int, Int, Int), #(Int, Int, Int, Int)),
-  String,
-)
-
-fn await_got_ip(timeout_ms: Int) -> Result(network.IpInfo, String) {
-  case await_got_ip_ffi(timeout_ms) {
-    Ok(#(address, netmask, gateway)) ->
-      Ok(network.IpInfo(
-        address: tuple_ip(address),
-        netmask: tuple_ip(netmask),
-        gateway: tuple_ip(gateway),
-      ))
-    Error(detail) -> Error(detail)
-  }
-}
-
-fn tuple_ip(octets: #(Int, Int, Int, Int)) -> network.Ipv4Address {
-  let #(a, b, c, d) = octets
-  network.Ipv4Address(a, b, c, d)
 }
 
 pub fn ipv4_string(address: network.Ipv4Address) -> String {
