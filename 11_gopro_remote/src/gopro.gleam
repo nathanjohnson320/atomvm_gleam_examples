@@ -14,21 +14,16 @@ import gleam/string
 /// Fields pulled from `GET /gopro/camera/state` `status` object.
 pub type Snapshot {
   Snapshot(
-    name: String,
     battery_percent: Int,
     /// 0–3 bars, or 4 = charging (`INTERNAL_BATTERY_BARS`).
     battery_bars: Int,
     encoding: Bool,
-    ready: Bool,
-    remaining_video_s: Int,
-    sd_remaining_bytes: Int,
-    zoom: Int,
   )
 }
 
 /// `FOLDER/FILE.JPG` path from `GET /gopro/media/list`.
 pub type MediaItem {
-  MediaItem(path: String, folder: String, file: String)
+  MediaItem(path: String)
 }
 
 pub fn fetch_snapshot() -> Result(Snapshot, String) {
@@ -81,26 +76,6 @@ pub fn parse_snapshot(body: BitArray) -> Result(Snapshot, String) {
   |> result.map_error(fn(_) { "JSON decode failed" })
 }
 
-pub fn format_video_remaining(seconds: Int) -> String {
-  let hours = seconds / 3600
-  let minutes = { seconds % 3600 } / 60
-  case hours > 0 {
-    True -> int.to_string(hours) <> "h " <> int.to_string(minutes) <> "m"
-    False -> int.to_string(minutes) <> "m"
-  }
-}
-
-pub fn format_sd_remaining(bytes: Int) -> String {
-  let mb = bytes / 1_000_000
-  case mb >= 1000 {
-    True -> {
-      let gb = mb / 1000
-      int.to_string(gb) <> "." <> int.to_string({ mb % 1000 } / 100) <> " GB"
-    }
-    False -> int.to_string(mb) <> " MB"
-  }
-}
-
 pub fn battery_label(percent: Int, bars: Int) -> String {
   case bars {
     4 -> int.to_string(percent) <> "% charging"
@@ -114,26 +89,15 @@ fn snapshot_decoder() -> decode.Decoder(Snapshot) {
 }
 
 fn status_decoder() -> decode.Decoder(Snapshot) {
-  // StatusId: ACCESS_POINT_SSID=30, INTERNAL_BATTERY_BARS=2,
-  // ENCODING=10, REMAINING_VIDEO_TIME=35, SD_CARD_REMAINING=54,
-  // INTERNAL_BATTERY_PERCENTAGE=70, ZOOM_LEVEL=75, READY=82.
-  use name <- decode.optional_field("30", "?", decode.string)
+  // StatusId: INTERNAL_BATTERY_BARS=2, ENCODING=10,
+  // INTERNAL_BATTERY_PERCENTAGE=70.
   use battery_percent <- decode.optional_field("70", 0, decode.int)
   use battery_bars <- decode.optional_field("2", 0, decode.int)
   use encoding_i <- decode.optional_field("10", 0, decode.int)
-  use ready_i <- decode.optional_field("82", 0, decode.int)
-  use remaining_video_s <- decode.optional_field("35", 0, decode.int)
-  use sd_remaining_bytes <- decode.optional_field("54", 0, decode.int)
-  use zoom <- decode.optional_field("75", 0, decode.int)
   decode.success(Snapshot(
-    name:,
     battery_percent:,
     battery_bars:,
     encoding: encoding_i != 0,
-    ready: ready_i != 0,
-    remaining_video_s:,
-    sd_remaining_bytes:,
-    zoom:,
   ))
 }
 
@@ -189,12 +153,7 @@ fn flatten_jpgs(folders: List(MediaFolder)) -> List(MediaItem) {
   list.flat_map(folders, fn(folder) {
     list.filter_map(folder.fs, fn(file) {
       case is_jpeg_name(file.n) {
-        True ->
-          Ok(MediaItem(
-            path: folder.d <> "/" <> file.n,
-            folder: folder.d,
-            file: file.n,
-          ))
+        True -> Ok(MediaItem(path: folder.d <> "/" <> file.n))
         False -> Error(Nil)
       }
     })

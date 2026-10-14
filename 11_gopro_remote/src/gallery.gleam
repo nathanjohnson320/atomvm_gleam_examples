@@ -237,10 +237,7 @@ fn start_thumb_load(state: State) -> State {
 }
 
 fn fetch_and_decode(path: String) -> Result(Sprite, String) {
-  use jpeg_bytes <- result.try(
-    gopro.fetch_thumbnail(path)
-    |> result.map_error(fn(message) { message }),
-  )
+  use jpeg_bytes <- result.try(gopro.fetch_thumbnail(path))
   let n = bit_array.byte_size(jpeg_bytes)
   io.println("thumb " <> int.to_string(n) <> " bytes, decoding...")
   jpeg.decode_preview(jpeg_bytes, max_thumb_w, max_thumb_h)

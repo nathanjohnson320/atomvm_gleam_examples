@@ -12,5 +12,3 @@ pub const wifi_psk = "CHANGE ME"
 pub const host = "10.5.5.9"
 
 pub const port = 8080
-
-pub const poll_interval_ms = 2000

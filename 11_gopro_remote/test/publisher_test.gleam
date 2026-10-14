@@ -17,14 +17,9 @@ pub fn parse_snapshot_test() {
     "{\"status\":{\"2\":4,\"10\":0,\"30\":\"GP50091424\",\"35\":75555,\"54\":500444672,\"70\":85,\"75\":0,\"82\":1},\"settings\":{}}":utf8,
   >>
   let assert Ok(snapshot) = gopro.parse_snapshot(body)
-  assert snapshot.name == "GP50091424"
   assert snapshot.battery_percent == 85
   assert snapshot.battery_bars == 4
   assert snapshot.encoding == False
-  assert snapshot.ready == True
-  assert snapshot.remaining_video_s == 75_555
-  assert snapshot.sd_remaining_bytes == 500_444_672
-  assert snapshot.zoom == 0
 }
 
 pub fn parse_media_list_jpgs_only_test() {
@@ -34,9 +29,9 @@ pub fn parse_media_list_jpgs_only_test() {
   let assert Ok(items) = gopro.parse_media_list(body)
   assert items
     == [
-      gopro.MediaItem("100GOPRO/GOPR0001.JPG", "100GOPRO", "GOPR0001.JPG"),
-      gopro.MediaItem("100GOPRO/GOPR0003.jpeg", "100GOPRO", "GOPR0003.jpeg"),
-      gopro.MediaItem("101GOPRO/GOPR0010.JPG", "101GOPRO", "GOPR0010.JPG"),
+      gopro.MediaItem("100GOPRO/GOPR0001.JPG"),
+      gopro.MediaItem("100GOPRO/GOPR0003.jpeg"),
+      gopro.MediaItem("101GOPRO/GOPR0010.JPG"),
     ]
 }
 
@@ -58,16 +53,6 @@ pub fn key_changes_edge_test() {
   let #(presses, releases) = gallery.changes(prev, curr)
   assert presses == [#(5, 12)]
   assert releases == []
-}
-
-pub fn format_video_remaining_test() {
-  assert gopro.format_video_remaining(75_555) == "20h 59m"
-  assert gopro.format_video_remaining(90) == "1m"
-}
-
-pub fn format_sd_remaining_test() {
-  assert gopro.format_sd_remaining(500_444_672) == "500 MB"
-  assert gopro.format_sd_remaining(1_500_000_000) == "1.5 GB"
 }
 
 pub fn battery_label_test() {

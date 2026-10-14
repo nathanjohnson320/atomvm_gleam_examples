@@ -48,7 +48,7 @@ pub fn render(width: Int, height: Int, view: View) -> List(Item) {
   ])
 }
 
-pub fn image_region_height(height: Int) -> Int {
+fn image_region_height(height: Int) -> Int {
   case height > status_h {
     True -> height - status_h
     False -> height
