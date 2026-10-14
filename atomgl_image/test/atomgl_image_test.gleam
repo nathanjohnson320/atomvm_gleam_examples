@@ -1,8 +1,10 @@
 import atomgl_image/gif
 import atomgl_image/item
+import atomgl_image/jpeg
 import atomgl_image/png
 import atomgl_image/sprite.{Rgba8888}
 import gleam/bit_array
+import gleam/int
 import gleam/list
 import gleeunit
 import simplifile
@@ -55,4 +57,78 @@ pub fn gif_fixture_decodes_test() {
   assert g1 == 0
   assert b1 == 255
   assert a1 == 255
+}
+
+fn assert_close(actual: Int, expected: Int) -> Nil {
+  assert int.absolute_value(actual - expected) <= 30
+}
+
+fn pixel_at(
+  pixels: BitArray,
+  width: Int,
+  x: Int,
+  y: Int,
+) -> #(Int, Int, Int, Int) {
+  let assert Ok(<<r, g, b, a>>) =
+    bit_array.slice(pixels, { y * width + x } * 4, 4)
+  #(r, g, b, a)
+}
+
+pub fn jpeg_fixture_decodes_test() {
+  let assert Ok(bytes) = simplifile.read_bits(from: "test/fixtures/thumb.jpg")
+  let assert Ok(Rgba8888(width, height, pixels)) = jpeg.decode(bytes)
+  assert width == 160
+  assert height == 120
+  assert bit_array.byte_size(pixels) == 160 * 120 * 4
+
+  let #(r, g, b, a) = pixel_at(pixels, width, 2, 2)
+  assert_close(r, 39)
+  assert_close(g, 120)
+  assert_close(b, 199)
+  assert a == 255
+
+  let #(r, g, b, a) = pixel_at(pixels, width, 80, 60)
+  assert_close(r, 132)
+  assert_close(g, 121)
+  assert_close(b, 151)
+  assert a == 255
+}
+
+pub fn jpeg_decode_scaled_test() {
+  let assert Ok(bytes) = simplifile.read_bits(from: "test/fixtures/thumb.jpg")
+  let assert Ok(Rgba8888(width, height, pixels)) =
+    jpeg.decode_scaled(bytes, 80, 60)
+  assert width <= 80
+  assert height <= 60
+  assert width == 80
+  assert height == 60
+  assert bit_array.byte_size(pixels) == width * height * 4
+
+  let assert Ok(Rgba8888(width, height, _)) =
+    jpeg.decode_scaled(bytes, 500, 500)
+  assert width == 160
+  assert height == 120
+
+  let assert Ok(Rgba8888(width, height, _)) = jpeg.decode_scaled(bytes, 50, 100)
+  assert width == 50
+  assert height == 37
+}
+
+pub fn jpeg_decode_preview_test() {
+  let assert Ok(bytes) = simplifile.read_bits(from: "test/fixtures/thumb.jpg")
+  let assert Ok(Rgba8888(width, height, pixels)) =
+    jpeg.decode_preview(bytes, 80, 60)
+  assert width <= 80
+  assert height <= 60
+  assert width > 0
+  assert height > 0
+  assert bit_array.byte_size(pixels) == width * height * 4
+
+  let assert Ok(<<_, _, _, a>>) = bit_array.slice(pixels, 0, 4)
+  assert a == 255
+}
+
+pub fn jpeg_rejects_non_jpeg_test() {
+  assert jpeg.decode(<<1, 2, 3>>) == Error(jpeg.NotJpeg)
+  assert jpeg.decode(<<0xFF, 0xD8, 0xFF>>) == Error(jpeg.Truncated)
 }

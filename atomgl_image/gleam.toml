@@ -1,7 +1,7 @@
 name = "atomgl_image"
 version = "1.0.0"
 gleam = ">= 1.18.1"
-description = "PNG/GIF decode and AtomGL rgba8888 helpers for Gleam"
+description = "PNG/GIF/JPEG decode and AtomGL rgba8888 helpers for Gleam"
 
 [dependencies]
 gleam_stdlib = ">= 1.0.0 and < 2.0.0"
