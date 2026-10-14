@@ -1,4 +1,5 @@
 import atomvm_gleam/i2c
+import atomvm_gleam/network
 import config
 import gleam/erlang/process
 import gleam/int
@@ -6,7 +7,6 @@ import gleam/io
 import gleam/result
 import mqtt
 import tmp103
-import wifi
 
 @external(erlang, "badge_ffi", "id")
 fn badge_id() -> String
@@ -24,16 +24,16 @@ pub fn start() -> Nil {
 fn run() -> Result(Nil, String) {
   io.println("Connecting to " <> config.wifi_ssid <> "...")
 
-  use address <- result.try(
-    wifi.connect(config.wifi_ssid, config.wifi_psk)
+  use info <- result.try(
+    network.wait_for_sta(config.wifi_ssid, config.wifi_psk, 30_000)
     |> result.map_error(fn(error) {
       "Failed to connect to "
       <> config.wifi_ssid
       <> ": "
-      <> wifi.error_to_string(error)
+      <> network.error_to_string(error)
     }),
   )
-  io.println("Connected, IP " <> address)
+  io.println("Connected, IP " <> ipv4_string(info.address))
 
   use client <- result.try(
     mqtt.connect(config.mqtt_host, config.mqtt_port, "badge-" <> badge_id())
@@ -63,6 +63,17 @@ fn run() -> Result(Nil, String) {
 
 pub fn temperature_topic(prefix: String, id: String) -> String {
   prefix <> "/" <> id <> "/temperature"
+}
+
+fn ipv4_string(address: network.Ipv4Address) -> String {
+  let network.Ipv4Address(a:, b:, c:, d:) = address
+  int.to_string(a)
+  <> "."
+  <> int.to_string(b)
+  <> "."
+  <> int.to_string(c)
+  <> "."
+  <> int.to_string(d)
 }
 
 fn loop(

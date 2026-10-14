@@ -1,5 +1,4 @@
 /// Thin Gleam wrapper around the vendored `:amqtt_client` Erlang library.
-
 pub type Client
 
 pub type Error {
@@ -18,17 +17,33 @@ pub fn error_to_string(error: Error) -> String {
 
 /// Connect and wait for CONNACK. Host is a hostname string; the FFI turns it
 /// into a charlist for AtomVM's TCP stack.
-pub fn connect(host: String, port: Int, client_id: String) -> Result(Client, Error) {
+pub fn connect(
+  host: String,
+  port: Int,
+  client_id: String,
+) -> Result(Client, Error) {
   connect_ffi(host, port, client_id)
 }
 
 @external(erlang, "mqtt_ffi", "connect")
-fn connect_ffi(host: String, port: Int, client_id: String) -> Result(Client, Error)
+fn connect_ffi(
+  host: String,
+  port: Int,
+  client_id: String,
+) -> Result(Client, Error)
 
 /// Publish at QoS 0 (fire and forget).
-pub fn publish(client: Client, topic: String, payload: String) -> Result(Nil, Error) {
+pub fn publish(
+  client: Client,
+  topic: String,
+  payload: String,
+) -> Result(Nil, Error) {
   publish_ffi(client, topic, payload)
 }
 
 @external(erlang, "mqtt_ffi", "publish")
-fn publish_ffi(client: Client, topic: String, payload: String) -> Result(Nil, Error)
+fn publish_ffi(
+  client: Client,
+  topic: String,
+  payload: String,
+) -> Result(Nil, Error)

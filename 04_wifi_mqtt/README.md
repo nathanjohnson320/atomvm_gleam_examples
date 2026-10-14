@@ -12,6 +12,12 @@ pub const mqtt_port = 1883
 pub const topic_prefix = "goatmire/badge"
 ```
 
+Watch publishes from a laptop with:
+
+```sh
+mosquitto_sub -h test.mosquitto.org -t 'goatmire/badge/+/temperature' -v
+```
+
 ```sh
 gleam run -m orbital flash esp32
 gleam run -m orbital monitor --timeout 20

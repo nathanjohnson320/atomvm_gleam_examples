@@ -1,7 +1,6 @@
 /// Credentials and broker settings. Edit these before flashing.
 ///
 /// Keep real passwords out of git — change locally and do not commit.
-
 pub const wifi_ssid = "YOUR_WIFI"
 
 pub const wifi_psk = "YOUR_PASSWORD"
