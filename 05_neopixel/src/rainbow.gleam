@@ -8,8 +8,7 @@ import sk6812
 
 const pixel_count = 4
 
-/// 3 degrees every frame. With a 10 ms frame this is faster than the 2.4 s
-/// turn described in the Elixir README (`@interval` there is 10).
+/// Hue advance per frame (degrees). At `interval_ms` of 10, a full turn is ~1.2 s.
 const hue_step = 3
 
 const interval_ms = 10

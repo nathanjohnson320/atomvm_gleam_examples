@@ -27,7 +27,7 @@ pub fn read_celsius(bus: Bus) -> Result(Int, String) {
   }
 }
 
-/// Rounded to two decimal places, matching the Elixir driver.
+/// Rounded to two decimal places.
 pub fn fahrenheit(celsius: Int) -> Float {
   let raw = int.to_float(celsius) *. 1.8 +. 32.0
   let centi = float.round(raw *. 100.0)

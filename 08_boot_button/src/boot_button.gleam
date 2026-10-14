@@ -15,7 +15,7 @@ const width = 320
 
 const height = 240
 
-/// Bounce window after accepting a press. Matching the Elixir exercise.
+/// Bounce window after accepting a press.
 const debounce_ms = 200
 
 type Message {

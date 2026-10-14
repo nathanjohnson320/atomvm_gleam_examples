@@ -15,7 +15,7 @@ const rows = [38, 39, 40, 41, 42, 45]
 const cols = [37, 36, 35, 48, 34, 33, 47, 46, 21, 18, 17, 16, 15]
 
 /// While keys are held, scan again after this many milliseconds. Idle has no
-/// timer. Matching the Elixir exercise.
+/// timer.
 const interval_ms = 20
 
 type Message {

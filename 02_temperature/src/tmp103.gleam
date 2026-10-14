@@ -18,7 +18,7 @@ pub fn read_celsius(bus: Bus) -> Result(Int, String) {
   |> result.map_error(fn(_) { "TMP103 read failed: unexpected payload" })
 }
 
-/// Convert Celsius to Fahrenheit, matching the Elixir exercise.
+/// Convert Celsius to Fahrenheit.
 pub fn read_fahrenheit(bus: Bus) -> Result(Float, String) {
   use celsius <- result.try(read_celsius(bus))
   Ok(int.to_float(celsius) *. 1.8 +. 32.0)
@@ -32,7 +32,7 @@ pub fn decode_celsius(data: BitArray) -> Result(Int, Nil) {
   }
 }
 
-/// Celsius to Fahrenheit, matching the Elixir loop.
+/// Celsius to Fahrenheit.
 pub fn fahrenheit(celsius: Int) -> Float {
   int.to_float(celsius) *. 1.8 +. 32.0
 }
