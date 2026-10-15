@@ -32,6 +32,8 @@ gleam run -m orbital install
 | [`08_boot_button`](08_boot_button) | Count boot-button presses on screen |
 | [`09_images`](09_images) | PNG/GIF art on AtomGL (decoded on the host) |
 | [`10_accelerometer`](10_accelerometer) | Tilt Lucy on screen with the SC7A20 |
+| [`11_gopro_remote`](11_gopro_remote) | Browse GoPro JPG thumbs over Wi‑Fi |
+| [`12_tea`](12_tea) | TEA chat UI + effects (Elm-shaped `ui` layout) |
 
 Shared helpers:
 

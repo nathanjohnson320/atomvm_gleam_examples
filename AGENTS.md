@@ -1,6 +1,6 @@
 # AGENTS.md
 
-Instructions for coding agents. Conventions live in [`.cursor/rules/`](.cursor/rules/). Read `gleam-conventions` before changing Gleam or Erlang FFI.
+Instructions for coding agents. Conventions live in [`.cursor/rules/`](.cursor/rules/). Read `gleam-conventions` and `gleam-atomvm-stdlib` before changing Gleam or Erlang FFI.
 
 ## Stack
 

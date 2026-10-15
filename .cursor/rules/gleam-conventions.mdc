@@ -32,6 +32,7 @@ Pin Gleam and OTP in each package's `.tool-versions` (and the repo root). Prefer
 - `let assert` only when failure is impossible or should crash in each example's init path.
 - Small modules; match neighboring examples' names and import style.
 - Erlang `.erl` FFI: keep thin; put protocol and policy in Gleam when practical.
+- **AtomVM stdlib gaps** (`string.lowercase`, `string.trim`, grapheme edits, …): see `gleam-atomvm-stdlib`.
 
 ## Commands
 

@@ -1,0 +1,104 @@
+---
+description: Gleam/OTP APIs that crash or are missing on AtomVM — never use; use the replacements
+globs: ["**/*.gleam", "**/*.erl"]
+alwaysApply: false
+---
+
+# AtomVM-unsafe Gleam / OTP stdlib
+
+Host `gleam test` (OTP) can pass while the **badge** crashes. Prefer APIs that operate on
+binaries/`BitArray` and plain list cons. When the monitor shows
+`cannot be resolved` or `badarg` in `lists:reverse` / `string:*`, check this list.
+
+## Never use on badge code
+
+| Avoid | Why | Symptom |
+| --- | --- | --- |
+| `string.lowercase` / `string.uppercase` | No AtomVM `string:lowercase/1` (etc.) | `cannot be resolved` → often `undef` |
+| `string.trim` / `string.trim_start` / `string.trim_end` | Grapheme path → `lists:reverse` on a UTF-8 binary | `badarg` in `lists:reverse` |
+| `string.slice` / `string.drop_*` / grapheme iterators for edits | Same grapheme / list assumption | `badarg` or wrong results |
+| Growing with `list.append(xs, [one])` | Prefer cons; append is easy to get wrong under memory pressure | Prefer prepend |
+
+`string.length` / `<>` / `<<text:utf8>>` are usually fine for ASCII labels.
+
+## Replacements
+
+### Case fold (letters)
+
+```gleam
+// ❌ BAD
+Some(chat.Type(string.lowercase(name)))
+
+// ✅ GOOD — store the label already cased (see 12_tea keymap)
+Some("q")  // in the layout table
+Some(chat.Type(name))
+```
+
+Or a tiny ASCII table if you must convert at runtime:
+
+```gleam
+fn ascii_lower(ch: String) -> String {
+  case ch {
+    "A" -> "a"
+    "B" -> "b"
+    // …
+    _ -> ch
+  }
+}
+```
+
+### Trim / empty draft
+
+```gleam
+// ❌ BAD
+case string.trim(model.draft) {
+  "" -> model
+  body -> …
+}
+
+// ✅ GOOD — exact empty (or strip spaces yourself with bit_array)
+case model.draft {
+  "" -> model
+  body -> …
+}
+```
+
+### Drop last character (ASCII / single-byte)
+
+```gleam
+// ❌ BAD
+string.slice(text, 0, string.length(text) - 1)
+
+// ✅ GOOD
+fn drop_last(text: String) -> String {
+  let bits = <<text:utf8>>
+  let n = bit_array.byte_size(bits)
+  case n {
+    0 -> ""
+    _ ->
+      case bit_array.slice(bits, 0, n - 1) {
+        Ok(prefix) ->
+          case bit_array.to_string(prefix) {
+            Ok(s) -> s
+            Error(Nil) -> text
+          }
+        Error(Nil) -> text
+      }
+  }
+}
+```
+
+### Grow a message / event list
+
+```gleam
+// ❌ BAD
+messages: list.append(model.messages, [Line("You", body)])
+
+// ✅ GOOD — newest first; reverse when painting oldest-at-top
+messages: [Line("You", body), ..model.messages]
+```
+
+## Related
+
+See `12_tea` (`chat.gleam`, `keymap.gleam`, `chat_view.gleam`) for a working badge-safe pattern.
+See `gleam-conventions` for package layout and `start` loops.
