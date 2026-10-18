@@ -6,7 +6,7 @@ Gleam compiles to BEAM. [Orbital](https://github.com/nathanjohnson320/orbital) p
 
 ## Requirements
 
-- Gleam 1.18.1 and Erlang/OTP 27+ (pinned in each example’s `.tool-versions`)
+- Gleam 1.19.2 and Erlang/OTP 27+ (pinned in each example’s `.tool-versions`)
 - AtomVM already on the badge (Gleam does not replace that firmware)
 - Orbital for flash and monitor
 

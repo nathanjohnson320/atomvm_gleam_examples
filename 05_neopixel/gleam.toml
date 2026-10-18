@@ -1,6 +1,6 @@
 name = "rainbow"
 version = "1.0.0"
-gleam = ">= 1.18.1"
+gleam = ">= 1.19.2"
 description = "Animate the badge SK6812 LEDs with an SPI waveform"
 
 [dependencies]
