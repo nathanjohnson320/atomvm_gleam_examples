@@ -1,6 +1,6 @@
 name = "publisher"
 version = "1.0.0"
-gleam = ">= 1.18.1"
+gleam = ">= 1.19.2"
 description = "Browse GoPro JPG thumbnails on the badge over Wi-Fi"
 
 [dependencies]

@@ -1,6 +1,6 @@
 name = "publisher"
 version = "1.0.0"
-gleam = ">= 1.18.1"
+gleam = ">= 1.19.2"
 description = "Publish the badge temperature over Wi-Fi and MQTT"
 
 [dependencies]

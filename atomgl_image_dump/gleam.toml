@@ -1,6 +1,6 @@
 name = "atomgl_image_dump"
 version = "1.0.0"
-gleam = ">= 1.18.1"
+gleam = ">= 1.19.2"
 description = "Host tool: dump PNG/GIF to AtomGL rgba8888 assets"
 
 [dependencies]

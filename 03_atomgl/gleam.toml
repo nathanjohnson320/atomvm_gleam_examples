@@ -1,6 +1,6 @@
 name = "display"
 version = "1.0.0"
-gleam = ">= 1.18.1"
+gleam = ">= 1.19.2"
 description = "Show the badge temperature on the AtomGL display"
 
 [dependencies]

@@ -1,6 +1,6 @@
 name = "temperature"
 version = "1.0.0"
-gleam = ">= 1.18.1"
+gleam = ">= 1.19.2"
 description = "Read the badge TMP103 and print the temperature on the console"
 
 [dependencies]

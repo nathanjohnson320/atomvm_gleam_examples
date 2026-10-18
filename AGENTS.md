@@ -27,7 +27,7 @@ Verify with `gleam format` / `gleam test` in touched crates. Ask before merge or
 
 ## Cloud Agent
 
-The environment install puts Gleam 1.18.1, Erlang/OTP 27.3.4.12, and rebar3 3.27.3 on `/usr/local/bin`.
+The environment install puts Gleam 1.19.2, Erlang/OTP 27.3.4.12, and rebar3 3.27.3 on `/usr/local/bin`.
 
 `/usr/local/bin/git` wraps `/usr/bin/git`. On `git checkout` of a 40-character commit that is missing locally, it fetches that commit from `origin` first. Gleam checks out pinned git SHAs after fetching only branch tips, and some `atomvm_gleam` pins are still on GitHub but not reachable from the default branch.
 

@@ -52,7 +52,10 @@ pub fn open() -> Result(Spi, String) {
 }
 
 /// Encode pixels as the SK6812 bitstream and clock them out.
-pub fn write(spi_bus: Spi, pixels: List(#(Int, Int, Int))) -> Result(Nil, String) {
+pub fn write(
+  spi_bus: Spi,
+  pixels: List(#(Int, Int, Int)),
+) -> Result(Nil, String) {
   let frame =
     pixels
     |> list.map(encode_pixel)

@@ -1,6 +1,6 @@
 name = "ui"
 version = "1.0.0"
-gleam = ">= 1.18.1"
+gleam = ">= 1.19.2"
 description = "TEA chat UI on AtomGL with Elm-shaped effects (HTTP API)"
 
 [dependencies]

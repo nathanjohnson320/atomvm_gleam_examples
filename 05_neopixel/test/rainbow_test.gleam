@@ -21,7 +21,8 @@ pub fn encode_zero_byte_test() {
 
 pub fn encode_pixel_green_first_test() {
   let encoded = sk6812.encode_pixel(#(1, 0, 0))
-  let assert <<green:bytes-size(4), red:bytes-size(4), blue:bytes-size(4)>> = encoded
+  let assert <<green:bytes-size(4), red:bytes-size(4), blue:bytes-size(4)>> =
+    encoded
   assert green == sk6812.encode_byte(0)
   assert red == sk6812.encode_byte(1)
   assert blue == sk6812.encode_byte(0)
